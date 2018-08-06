@@ -75,6 +75,11 @@ def user_options():
     # display special attacks only if acquired
     # display stones
 
+def set_level():
+    '''Creates level based on various factors'''
+    # unused function. Meant to create all levels using several arguments instead
+    # will come back to this. Could be useful for refactoring into cleaner code
+
 
 def level_one():
     '''Sets level'''
