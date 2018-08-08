@@ -1,5 +1,9 @@
 # import create_players
-import time
+import time, os
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
 
 def main_menu():
     '''Where the game starts. Sets default difficulty and mode'''
