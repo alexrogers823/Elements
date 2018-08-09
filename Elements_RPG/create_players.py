@@ -16,8 +16,8 @@ class Player:
         # come back to this one lol
 
 class Hero(Player):
-    def __init__(self, basic_attack, magic_points=50,  temp_stone=False, elemental_stone="", **kwargs):
-        super().__init__(life_points, has_weapon, weapon_attack, **kwargs)
+    def __init__(self, name, element_type, life_points, has_weapon, weapon_attack, basic_attack, magic_points=50, temp_stone=False, elemental_stone="", **kwargs):
+        super().__init__(name, element_type, life_points, has_weapon, weapon_attack, **kwargs)
         self.life_points = 100
         self.magic_points = magic_points
         self.basic_attack = basic_attack
@@ -26,8 +26,8 @@ class Hero(Player):
 
 
 # enemy class inherits from player class, but we will call directly with specific enemies using MRO
-class Enemy:
-    def __init__(self, low_attack, high_attack, **kwargs):
-        super().__init__(life_points, has_weapon, weapon_attack, **kwargs)
+class Enemy(Player):
+    def __init__(self, name, element_type, life_points, has_weapon, weapon_attack, low_attack, high_attack, **kwargs):
+        super().__init__(name, element_type, life_points, has_weapon, weapon_attack, **kwargs)
         self.low_attack = low_attack
         self.high_attack = high_attack
