@@ -10,14 +10,9 @@ def battle(hero, enemy):
         "Your path is being blocked by a {}! Can you take him?",
         "Look here, a {} is sizing you up! Kill them"]
 
-    print(random.choice(introductions.format(enemy)))
+    print(random.choice(introductions.format(enemy.name)))
     time.sleep(2)
     #Write a while loop that displays and executes attacks until there is a winner
-
-def display_options():
-    print("Your nove")
-    print()
-    #display hero options here in a for loop, directly from the object
 
 
 def main_menu():
@@ -69,13 +64,21 @@ def tutorial():
 
 def create_hero():
     '''Sets hero name and type to use throughout gameplay'''
+    print("Create your hero. Choose wisely!")
     # user chooses one of the types: water, earth, fire, or air
+    element_type = input("Which element type? Water, Earth, Fire, or Air?\n").title()
+    weapon_attack = element_type + " Attack"
     # user names the hero
+    hero_name = input("Your hero needs a name...\n")
     # after deciding, a hero is made using the inherited class that was imported
+    print("Creating hero {}".format(hero_name))
+    time.sleep(3)
+
 
 
 def order_of_levels():
     '''Creates level order based on hero type'''
+    level_types = ["Water", "Earth", "Fire", "Air"]
     # based on hero weakness, cycle levels to where weakness is levels 4 and 9
     # for now, we will have each level as separate function
     # later, we will refactor to call one 'level' function with parameters deciding which level
@@ -96,6 +99,7 @@ def display_stats():
 def user_options():
     '''Recurring function that displays what hero can do to attack during gameplay'''
     # 'Hero's move
+    print("Your move")
     # display normal attacks
     # display special attacks only if acquired
     # display stones
