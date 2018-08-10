@@ -1,12 +1,33 @@
-# import create_players
-import time, os
+import create_players
+import time, random, os
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
-    
+
+def battle(hero, enemy):
+    introductions = [
+        "A {} stands in your way! Prepare for battle!",
+        "Your path is being blocked by a {}! Can you take him?",
+        "Look here, a {} is sizing you up! Kill them"]
+
+    print(random.choice(introductions.format(enemy)))
+    time.sleep(2)
+    #Write a while loop that displays and executes attacks until there is a winner
+
+def display_options():
+    print("Your nove")
+    print()
+    #display hero options here in a for loop, directly from the object
+
 
 def main_menu():
     '''Where the game starts. Sets default difficulty and mode'''
+
+    choices = {
+        "[C]hange modes": "change difficulty and modes",
+        "[S]tart game": "start playing"
+        "[P]assword": "enter save password"
+    }
     print('Welcome! Choose from the following options')
     for choice in choices.keys():
         print('{} to {}'.format(choice, choices[choice]))
@@ -128,13 +149,28 @@ def level_ten():
 def elematrix():
     '''Introduces boss and continues level 10'''
     # comes in boss part of level level_ten
+    print("All of the sudden, the elements go wild...")
+    time.sleep(2)
+    print("A strange anomoly appears, and it looks...so...menicing")
+    time.sleep(3)
+    slow_message = ["It's time", "to fight", "ELEMATRIX!"]
+    for word in slow_message:
+        print(word, end="")
+        time.sleep(1)
 
 
 def game_over():
     '''signals end of game to user'''
     # if hero is killed, gives bad message
+    if result == 'bad':
+        print("Looks like {} has fallen. Game over".format(hero.name))
+        print("Keep playing though. You're one step closer to success!")
     # if user beat game, gives good message (good ending)
+    if result == 'good':
+        print("After ten levels of brutal hell, you did it! {} is the king of elements".format(hero.name))
+        print("Challenge yourself by switching difficulties if you haven't already")
     # goes to generate_password function based on stats of hero
+    generate_password()
 
 
 def generate_password():
