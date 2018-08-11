@@ -201,3 +201,8 @@ time.sleep(2)
 # play_again = input('Interesting game right? Wanna give it another try? [y/n]')
 # if play_again.lower().startswith('y'):
 #     main_menu()
+
+# private variables. move these later
+game_difficulty = 'normal'
+game_mode = 'scarce'
+game_multiplier = 1.3
