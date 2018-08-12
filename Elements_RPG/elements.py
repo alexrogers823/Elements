@@ -112,10 +112,12 @@ def set_level():
 
 def level_one():
     '''Sets level'''
+    #5 enemies plus boss
 
 
 def level_two():
     '''Sets level'''
+    #8 enemies plus boss
 
 
 def level_three():
@@ -177,12 +179,13 @@ def game_over():
     generate_password()
 
 
-def generate_password():
+def generate_password(hero):
     '''After game ends, this will generate a password based on hero stats,
     so that user can choose to start game with these stats next time'''
     # will use hero object to pack/unpack statistics into password
     # parameter will either be *args (tuple) or **kwargs (dictionary)
     # will then make an array based on argument passed, then join into single string
+    return [].join(',')
 
 
 
