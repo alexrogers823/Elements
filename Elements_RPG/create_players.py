@@ -11,6 +11,9 @@ class Player:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    def __str__(self):
+        return self.name
+
     def attack(self):
         pass
         # come back to this one lol
