@@ -14,6 +14,9 @@ class Player:
     def __str__(self):
         return self.name
 
+    def stats(self):
+        return '{}: {} Type, {} LP'.format(self.name, self.element_type, self.life_points)
+
     def attack(self):
         pass
         # come back to this one lol
@@ -27,6 +30,11 @@ class Hero(Player):
         self.temp_stone = temp_stone
         self.elemental_stone = elemental_stone
 
+    @property 
+    def stats(self):
+        super().stats(self)
+        return '{}: {} Type, {} LP, {} MP'.format(self.name, self.element_type, self.life_points, self.magic_points)
+
 
 # enemy class inherits from player class, but we will call directly with specific enemies using MRO
 class Enemy(Player):
@@ -34,3 +42,6 @@ class Enemy(Player):
         super().__init__(name, element_type, life_points, has_weapon, weapon_attack, **kwargs)
         self.low_attack = low_attack
         self.high_attack = high_attack
+
+    def stats(self):
+        super().stats(self)
