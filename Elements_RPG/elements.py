@@ -1,10 +1,14 @@
-import create_players
+from attack_names import Attacks
+import create_players, game_items
 import time, random, os
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def battle(hero, enemy):
+    hero_battle = game_items.Battle(hero.life_points, hero.magic_points)
+    enemy_battle = game_items.Battle(enemy.life_points)
+
     introductions = [
         "A {} stands in your way! Prepare for battle!",
         "Your path is being blocked by a {}! Can you take him?",
@@ -13,6 +17,24 @@ def battle(hero, enemy):
     print(random.choice(introductions.format(enemy.name)))
     time.sleep(2)
     #Write a while loop that displays and executes attacks until there is a winner
+    while hero_battle.life_points >= 0 and enemy_battle.life_points >= 0:
+        attack, damage, magic_used = user_options()
+        print("You attack with {}, causing {} damage!".format(attack, damage))
+        enemy_battle.attacked = damage
+        hero_battle.mp_replenish = magic_used
+        if enemy_battle.life_points <= 0:
+            break
+
+        enemy_attack = random.choice([enemy.low_attack, enemy.high_attack, enemy.weapon_attack])
+        print("The {} attacks with {}, causing {} damage!".format(enemy.name, enemy_attack, enemy_damage))
+        hero_battle.attacked = enemy_damage
+        if hero_battle.life_points <= 0:
+            break
+
+        hero_battle.mp_replenish
+
+
+
 
 
 def main_menu():
@@ -20,7 +42,7 @@ def main_menu():
 
     choices = {
         "[C]hange modes": "change difficulty and modes",
-        "[S]tart game": "start playing"
+        "[S]tart game": "start playing",
         "[P]assword": "enter save password"
     }
     print('Welcome! Choose from the following options')
@@ -43,6 +65,7 @@ def main_menu():
 
 
 def change_modes(difficulty, mode):
+    '''function that allows user to set difficulty and mode for game'''
     # have information dict/list to show different modes
     # change private (or global) variable on based on user input
 
@@ -60,28 +83,69 @@ def tutorial():
     # give an example of battle gameplay
     # talk about XP and coin gains
     # shop and fusion tutorial will happen during gameplay
+    hero = create_hero()
+
 
 
 def create_hero():
     '''Sets hero name and type to use throughout gameplay'''
     print("Create your hero. Choose wisely!")
     # user chooses one of the types: water, earth, fire, or air
-    element_type = input("Which element type? Water, Earth, Fire, or Air?\n").title()
-    weapon_attack = element_type + " Attack"
+    element_choices = ["Water", "Earth", "Fire", "Air"]
+    print("Which element type? Water, Earth, Fire, or Air?")
+    while True:
+        try:
+            element_type = input().title()
+            if element_type not in element_choices:
+                raise ValueError
+        except ValueError:
+            print("Invalid choice. (Make sure your choice has correct spelling)")
+        else:
+            break
+
+    basic_attack, weapon_attack = Attacks("hero", element_type).names()
     # user names the hero
     hero_name = input("Your hero needs a name...\n")
     # after deciding, a hero is made using the inherited class that was imported
     print("Creating hero {}".format(hero_name))
     time.sleep(3)
+    return create_players.Hero(hero_name, element_type, basic_attack, weapon_attack=weapon_attack)
 
 
 
-def order_of_levels():
+def order_of_levels(hero_type):
     '''Creates level order based on hero type'''
     level_types = ["Water", "Earth", "Fire", "Air"]
     # based on hero weakness, cycle levels to where weakness is levels 4 and 9
     # for now, we will have each level as separate function
     # later, we will refactor to call one 'level' function with parameters deciding which level
+    order = {
+        "Water": ["Air", "Earth", "Water", "Fire"],
+        "Earth": ["Water", "Fire", "Earth", "Air"],
+        "Fire": ["Earth", "Air", "Fire", "Water"],
+        "Air": ["Fire", "Water", "Air", "Earth"]
+    }
+
+    stages = {
+        "Water": ["Symbolic Ocean", "Aquatic Sanctuary"],
+        "Earth": ["High Ground", "Cave of Wonder"],
+        "Fire": ["Pyrocity", "Flaming Desert"],
+        "Air": ["Windy Bridge", "Floating Sky"]
+    }
+
+    level_select = order[hero_type]
+
+    level_one(level_select[0], stages[level_select[0]][0])
+    # level_two(level_select[1], stages[level_select[1]][0])
+    # level_three(level_select[2], stages[level_select[2]][0])
+    # level_four(level_select[3], stages[level_select[3]][0])
+    # level_five(level_select[0], stages[level_select[0]][1])
+    # level_six(level_select[1], stages[level_select[1]][1])
+    # level_seven(level_select[2], stages[level_select[2]][1])
+    # level_eight("Fusion", "Lightning Tower")
+    # level_nine(level_select[3], stages[level_select[3]][1])
+    # level_ten("Fusion", "Element Vortex")
+
 
 
 def shop():
@@ -103,6 +167,7 @@ def user_options():
     # display normal attacks
     # display special attacks only if acquired
     # display stones
+    return choice, attack_points, magic_points
 
 def set_level():
     '''Creates level based on various factors'''
@@ -110,8 +175,12 @@ def set_level():
     # will come back to this. Could be useful for refactoring into cleaner code
 
 
-def level_one():
+def level_one(chosen_type, stage, number_of_enemies=5):
     '''Sets level'''
+    print("Welcome to the {}".format(stage))
+    time.sleep(1)
+    print("Stage 1 Begin")
+    time.sleep(1)
     #5 enemies plus boss
 
 
@@ -209,3 +278,4 @@ time.sleep(2)
 game_difficulty = 'normal'
 game_mode = 'scarce'
 game_multiplier = 1.3
+tutorial()
