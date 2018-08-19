@@ -1,37 +1,57 @@
 from attack_names import Attacks
+from gameplay_mods import Gameplay
 import create_players, game_items
 import time, random, os
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+# playing with this idea. May or may not have it
+def game_intro(hero):
+    print('''\tLong ago, the world was balanced by the elemental forces
+    that were bestowed, in equal strength and harmony.
+    \tBut an evil entity took advantage of such strengths and created chaos,
+    unleashing havoc by corrupting the guardians of the elements and the ones
+    who serve them.
+    Now, it is up to {} to restore order, and bring an end to great evil once and
+    for all...'''.format(hero.name))
+
 def battle(hero, enemy):
-    hero_battle = game_items.Battle(hero.life_points, hero.magic_points)
-    enemy_battle = game_items.Battle(enemy.life_points)
+    # hero_battle = game_items.Battle(hero.life_points, hero.magic_points)
+    # enemy_battle = game_items.Battle(enemy.life_points)
+    hero_inventory = hero.display_inventory
 
     introductions = [
         "A {} stands in your way! Prepare for battle!",
         "Your path is being blocked by a {}! Can you take him?",
         "Look here, a {} is sizing you up! Kill them"]
 
-    print(random.choice(introductions.format(enemy.name)))
+    print(random.choice(introductions).format(enemy.name))
     time.sleep(2)
     #Write a while loop that displays and executes attacks until there is a winner
-    while hero_battle.life_points >= 0 and enemy_battle.life_points >= 0:
-        attack, damage, magic_used = user_options()
+    while hero.life_points > 0 and enemy.life_points > 0:
+        attack, damage, magic_used = user_options(hero, enemy, hero_inventory)
         print("You attack with {}, causing {} damage!".format(attack, damage))
-        enemy_battle.attacked = damage
-        hero_battle.mp_replenish = magic_used
-        if enemy_battle.life_points <= 0:
+        time.sleep(1)
+        enemy.attacked = damage
+        hero.mp_replenish = magic_used
+        if enemy.life_points <= 0:
+            hero.mp_replenish
             break
 
         enemy_attack = random.choice([enemy.low_attack, enemy.high_attack, enemy.weapon_attack])
+        enemy_damage = 10
         print("The {} attacks with {}, causing {} damage!".format(enemy.name, enemy_attack, enemy_damage))
-        hero_battle.attacked = enemy_damage
-        if hero_battle.life_points <= 0:
+        hero.attacked = enemy_damage
+        if hero.life_points <= 0:
             break
 
-        hero_battle.mp_replenish
+        hero.mp_replenish
+
+    if enemy.life_points <= 0:
+        return "win"
+    else:
+        return "loss"
 
 
 
@@ -39,6 +59,8 @@ def battle(hero, enemy):
 
 def main_menu():
     '''Where the game starts. Sets default difficulty and mode'''
+    difficulty, game_multiplier, enemy_multiplier = Gameplay().set_difficulty
+    mode = Gameplay().set_mode
 
     choices = {
         "[C]hange modes": "change difficulty and modes",
@@ -84,6 +106,8 @@ def tutorial():
     # talk about XP and coin gains
     # shop and fusion tutorial will happen during gameplay
     hero = create_hero()
+    # game_intro(hero)
+    order_of_levels(hero)
 
 
 
@@ -113,9 +137,8 @@ def create_hero():
 
 
 
-def order_of_levels(hero_type):
+def order_of_levels(hero):
     '''Creates level order based on hero type'''
-    level_types = ["Water", "Earth", "Fire", "Air"]
     # based on hero weakness, cycle levels to where weakness is levels 4 and 9
     # for now, we will have each level as separate function
     # later, we will refactor to call one 'level' function with parameters deciding which level
@@ -133,9 +156,17 @@ def order_of_levels(hero_type):
         "Air": ["Windy Bridge", "Floating Sky"]
     }
 
-    level_select = order[hero_type]
+    # Order is minion, sub-boss, boss 1, boss 2
+    enemy_names = {
+        "Water": ["Whitewater Sage", "Sr. Whitewater Sage", "Oceanic Prince", "Oceanic King"],
+        "Earth": ["Geo Wrangler", "Geo Champion", "Earth Emperor", "Earth God"],
+        "Fire": ["Blazed Knight", "Blazed Bishop", "Scorched Lieutenant", "Scorched General"],
+        "Air": ["Wind Sorcerer", "Advanced Wind Sorcerer", "Wind Keeper", "Wind Master"]
+    }
 
-    level_one(level_select[0], stages[level_select[0]][0])
+    level_select = order[hero.element_type]
+
+    level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
     # level_two(level_select[1], stages[level_select[1]][0])
     # level_three(level_select[2], stages[level_select[2]][0])
     # level_four(level_select[3], stages[level_select[3]][0])
@@ -148,10 +179,15 @@ def order_of_levels(hero_type):
 
 
 
-def shop():
+def shop(hero):
     '''Where user can purchase upgrades for their hero'''
     # show weapons and stones, and how much each cost
     # make sure hero can only equip one elemental stones
+    print("{0} SHOP {0}".format("-"*5))
+    print("Type in the first three letters of item to purchase.")
+    print("When you're finished, type EXIT to start next level")
+    print(hero.shop_stats)
+    # for loop that displays all options (from a class)
 
 
 def display_stats():
@@ -160,13 +196,28 @@ def display_stats():
     # may play with idea of using coins to display during battle
 
 
-def user_options():
+def user_options(hero, enemy, hero_inventory):
     '''Recurring function that displays what hero can do to attack during gameplay'''
     # 'Hero's move
+    print()
+    print(hero.stats)
+    print("{0} VS {0}".format("-"*3))
+    print(enemy.stats)
     print("Your move")
+    print("*"*8)
     # display normal attacks
     # display special attacks only if acquired
     # display stones
+    number = 0 #Hack-ish
+    option_mp = [0, 10, 15] #Also hack-ish
+    for option in hero_inventory:
+        print('[{}]  {} ({} MP)'.format(chr(number+65), option, option_mp[number]))
+        number += 1
+
+    choice = hero_inventory[ord(input().upper())-65]
+    attack_points, magic_points = hero.show_attack_damage
+
+
     return choice, attack_points, magic_points
 
 def set_level():
@@ -175,13 +226,39 @@ def set_level():
     # will come back to this. Could be useful for refactoring into cleaner code
 
 
-def level_one(chosen_type, stage, number_of_enemies=5):
+def level_one(chosen_type, stage, hero, minion_name, boss, number_of_enemies=5):
     '''Sets level'''
+    minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
+    minion_life_points = 20
+    boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
+    boss_life_points = 50
+    boss = create_players.Enemy(boss, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack)
     print("Welcome to the {}".format(stage))
     time.sleep(1)
     print("Stage 1 Begin")
     time.sleep(1)
+
     #5 enemies plus boss
+    kills = 0
+    while kills < number_of_enemies:
+        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        # outcome = battle(hero, minion)
+        if battle(hero, minion) == "win":
+            print("{} is defeated! You gain 5 coins".format(minion.name))
+            hero.gain_coins = 'minion'
+            time.sleep(1)
+            kills += 1
+        else:
+            game_over("bad")
+    print("You did good, but now...here comes the boss, {}!".format(boss.name))
+    # outcome = battle(hero, boss)
+    if battle(hero, boss) == "win":
+        print("{} is defeated! You beat the level!".format(boss.name))
+        time.sleep(3)
+        clear_screen()
+        shop(hero)
+    else:
+        game_over()
 
 
 def level_two():
@@ -234,7 +311,7 @@ def elematrix():
         time.sleep(1)
 
 
-def game_over():
+def game_over(result):
     '''signals end of game to user'''
     # if hero is killed, gives bad message
     if result == 'bad':
