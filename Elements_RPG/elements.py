@@ -107,7 +107,8 @@ def tutorial():
     # shop and fusion tutorial will happen during gameplay
     hero = create_hero()
     # game_intro(hero)
-    order_of_levels(hero)
+    shop(hero)
+    # order_of_levels(hero)
 
 
 
@@ -182,12 +183,15 @@ def order_of_levels(hero):
 def shop(hero):
     '''Where user can purchase upgrades for their hero'''
     # show weapons and stones, and how much each cost
-    # make sure hero can only equip one elemental stones
+    # make sure hero can only equip one elemental stone
     print("{0} SHOP {0}".format("-"*5))
     print("Type in the first three letters of item to purchase.")
     print("When you're finished, type EXIT to start next level")
     print(hero.shop_stats)
+    print()
     # for loop that displays all options (from a class)
+    for item in hero.display_shop_options:
+        print("{}: {} Coins \n\t-{}".format(item[0], item[1], item[2]))
 
 
 def display_stats():
