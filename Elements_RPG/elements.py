@@ -1,7 +1,7 @@
 from attack_names import Attacks
 from gameplay_mods import Gameplay
 import create_players, game_items
-import time, random, os
+import time, math, random, os
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -26,7 +26,8 @@ def battle(hero, enemy):
         "Your path is being blocked by a {}! Can you take him?",
         "Look here, a {} is sizing you up! Kill them"]
 
-    print(random.choice(introductions).format(enemy.name))
+    if not enemy.boss:
+        print(random.choice(introductions).format(enemy.name))
     time.sleep(2)
     #Write a while loop that displays and executes attacks until there is a winner
     while hero.life_points > 0 and enemy.life_points > 0:
@@ -39,8 +40,9 @@ def battle(hero, enemy):
             hero.mp_replenish
             break
 
-        enemy_attack = random.choice([enemy.low_attack, enemy.high_attack, enemy.weapon_attack])
-        enemy_damage = 10
+        enemy.change_base_damage
+        enemy_attack, enemy_damage = random.choice([(enemy.low_attack, enemy.base_low_damage), (enemy.high_attack, enemy.base_high_damage), (enemy.weapon_attack, enemy.base_weapon_damage)])
+        enemy_damage = math.ceil(enemy_damage*game_multiplier)
         print("The {} attacks with {}, causing {} damage!".format(enemy.name, enemy_attack, enemy_damage))
         hero.attacked = enemy_damage
         if hero.life_points <= 0:
@@ -107,8 +109,9 @@ def tutorial():
     # shop and fusion tutorial will happen during gameplay
     hero = create_hero()
     # game_intro(hero)
-    shop(hero)
-    # order_of_levels(hero)
+    # shop(hero)
+    # generate_password(hero)
+    order_of_levels(hero)
 
 
 
@@ -168,7 +171,7 @@ def order_of_levels(hero):
     level_select = order[hero.element_type]
 
     level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
-    # level_two(level_select[1], stages[level_select[1]][0])
+    level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
     # level_three(level_select[2], stages[level_select[2]][0])
     # level_four(level_select[3], stages[level_select[3]][0])
     # level_five(level_select[0], stages[level_select[0]][1])
@@ -184,14 +187,27 @@ def shop(hero):
     '''Where user can purchase upgrades for their hero'''
     # show weapons and stones, and how much each cost
     # make sure hero can only equip one elemental stone
-    print("{0} SHOP {0}".format("-"*5))
-    print("Type in the first three letters of item to purchase.")
-    print("When you're finished, type EXIT to start next level")
-    print(hero.shop_stats)
-    print()
-    # for loop that displays all options (from a class)
-    for item in hero.display_shop_options:
-        print("{}: {} Coins \n\t-{}".format(item[0], item[1], item[2]))
+    while True:
+        print("{0} SHOP {0}".format("-"*5))
+        print("Type in the first three letters of item to purchase.")
+        print("When you're finished, type EXIT to start next level")
+        print(hero.shop_stats)
+        print()
+        # for loop that displays all options (from a class)
+        for item in hero.display_shop_options:
+            print("{}: {} Coins \n\t-{}".format(item[0], item[1], item[2]))
+        buy = input()
+        if buy.upper() != 'EXIT':
+            if buy.lower().startswith('wea'):
+                hero.acquire_items = 'weapon'
+            print('Item bought!')
+            time.sleep(2)
+            clear_screen()
+        else:
+            break
+
+    print("On to the next level...")
+    time.sleep(1)
 
 
 def display_stats():
@@ -218,8 +234,10 @@ def user_options(hero, enemy, hero_inventory):
         print('[{}]  {} ({} MP)'.format(chr(number+65), option, option_mp[number]))
         number += 1
 
-    choice = hero_inventory[ord(input().upper())-65]
-    attack_points, magic_points = hero.show_attack_damage
+    letter = ord(input().upper()) - 65
+    choice = hero_inventory[letter]
+    hero.choose_attack_damage = letter
+    attack_points, magic_points = hero.choose_attack_damage
 
 
     return choice, attack_points, magic_points
@@ -230,13 +248,13 @@ def set_level():
     # will come back to this. Could be useful for refactoring into cleaner code
 
 
-def level_one(chosen_type, stage, hero, minion_name, boss, number_of_enemies=5):
+def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=5):
     '''Sets level'''
     minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
     minion_life_points = 20
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 50
-    boss = create_players.Enemy(boss, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack)
+    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
     print("Welcome to the {}".format(stage))
     time.sleep(1)
     print("Stage 1 Begin")
@@ -249,25 +267,60 @@ def level_one(chosen_type, stage, hero, minion_name, boss, number_of_enemies=5):
         # outcome = battle(hero, minion)
         if battle(hero, minion) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
-            hero.gain_coins = 'minion'
+            hero.gain_coins_and_xp = 'minion'
+            # hero.gain_xp = 'minion'
             time.sleep(1)
             kills += 1
         else:
-            game_over("bad")
-    print("You did good, but now...here comes the boss, {}!".format(boss.name))
+            game_over(hero, "bad")
+    print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
     # outcome = battle(hero, boss)
-    if battle(hero, boss) == "win":
-        print("{} is defeated! You beat the level!".format(boss.name))
+    if battle(hero, stage_boss) == "win":
+        print("{} is defeated! You beat the level!".format(stage_boss.name))
+        hero.gain_coins_and_xp = 'boss'
+        # hero.gain_xp = 'boss'
         time.sleep(3)
         clear_screen()
         shop(hero)
     else:
-        game_over()
+        game_over(hero, "bad")
 
-
-def level_two():
+def level_two(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=8):
     '''Sets level'''
+    minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
+    minion_life_points = 20
+    boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
+    boss_life_points = 70
+    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+    print("Welcome to the {}".format(stage))
+    time.sleep(1)
+    print("Stage 2 Begin")
+    time.sleep(1)
+
     #8 enemies plus boss
+    kills = 0
+    while kills < number_of_enemies:
+        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        # outcome = battle(hero, minion)
+        if battle(hero, minion) == "win":
+            print("{} is defeated! You gain 5 coins".format(minion.name))
+            hero.gain_coins_and_xp = 'minion'
+            # hero.gain_xp = 'minion'
+            time.sleep(1)
+            kills += 1
+        else:
+            game_over(hero, "bad")
+    print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
+    # outcome = battle(hero, boss)
+    if battle(hero, stage_boss) == "win":
+        print("{} is defeated! You beat the level!".format(stage_boss.name))
+        hero.gain_coins_and_xp = 'boss'
+        # hero.gain_xp = 'boss'
+        time.sleep(3)
+        # clear_screen()
+        # shop(hero)
+    else:
+        game_over(hero, "bad")
 
 
 def level_three():
@@ -315,7 +368,7 @@ def elematrix():
         time.sleep(1)
 
 
-def game_over(result):
+def game_over(hero, result):
     '''signals end of game to user'''
     # if hero is killed, gives bad message
     if result == 'bad':
@@ -325,8 +378,11 @@ def game_over(result):
     if result == 'good':
         print("After ten levels of brutal hell, you did it! {} is the king of elements".format(hero.name))
         print("Challenge yourself by switching difficulties if you haven't already")
+    print()
+    time.sleep(2)
     # goes to generate_password function based on stats of hero
-    generate_password()
+    print("Use this password to start game with current stats:")
+    generate_password(hero)
 
 
 def generate_password(hero):
@@ -335,7 +391,35 @@ def generate_password(hero):
     # will use hero object to pack/unpack statistics into password
     # parameter will either be *args (tuple) or **kwargs (dictionary)
     # will then make an array based on argument passed, then join into single string
-    return [].join(',')
+    one = {
+        "Water": "AQ",
+        "Earth": "TE",
+        "Fire": "PY",
+        "Air": "AE"
+    }
+
+    if hero.life_points == 100:
+        two = '100'
+    else:
+        two = '0{}'.format(hero.life_points)
+
+    if hero.elemental_stone and hero.temp_stone:
+        three = '{}T'.format(hero.elemental_stone[0])
+    elif hero.temp_stone:
+        three = 'OT'
+    else:
+        three = 'OO'
+
+    four = hero.magic_points
+
+    five = 1 #weapon level. Will do later
+
+    if hero.xp > 1000:
+        six = hero.xp
+    else:
+        six = '0{}'.format(hero.xp)
+
+    print('{}{}{}{}{}X{}'.format(one[hero.element_type], two, three, four, five, six))
 
 
 
@@ -356,7 +440,7 @@ time.sleep(2)
 #     main_menu()
 
 # private variables. move these later
-game_difficulty = 'normal'
-game_mode = 'scarce'
+# game_difficulty = 'normal'
+# game_mode = 'scarce'
 game_multiplier = 1.3
 tutorial()

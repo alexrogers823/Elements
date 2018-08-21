@@ -10,6 +10,17 @@ class Attacks:
     def __str__(self):
         return "Morality: {}, Type: {}".format(self.morality, self.element_type)
 
+    # obsolete function 
+    def damage(self, value=0):
+        # for hero: basic and mp basic (first); weapon and mp multiplier (second).
+        # for enemy: low, high, weapon
+        base_damage = {
+            "hero": [(10, 15), (15, 2)],
+            "enemy": [(10, 15, 13)]
+        }
+
+        return base_damage[self.morality][value]
+
     def names(self):
         if self.morality == "hero":
             # attacks go in this order: basic attack, weapon attack. later will add temp-based and fusion attacks
