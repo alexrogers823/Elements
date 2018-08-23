@@ -80,9 +80,10 @@ def main_menu():
         password = input('Password: ')
         save_hack(password)
     elif path.lower().startswith('ch'):
-        change_modes()
+        change_modes(difficulty, mode)
     else:
         tutorial()
+
     #if password isn't blank, unpack it as a tuple. if blank, ask for tutorial
     # and/or go to create_hero
     # also provide try/except if user enters an invalid password
