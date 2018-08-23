@@ -96,9 +96,35 @@ def change_modes(difficulty, mode):
 
 def save_hack(password):
     '''Function that re-creates a previous hero based on password user inputted'''
-    # ask the player for the hero's name again
     # create a tuple or dictionary using password via packing/unpacking
     # use inherited class to re-create hero using tuple and name
+    element = {
+        "AQ": "Water",
+        "TE": "Earth",
+        "PY": "Fire",
+        "AE": "Air"
+    }
+
+    stone = {
+        "W": "Water",
+        "E": "Earth",
+        "F": "Fire",
+        "A": "Air",
+        "O": ""
+    }
+
+    # ask the player for the hero's name again
+    hero_name = input('I forgot your hero\'s name again. What was it?')
+    basic_attack, weapon_attack = Attacks("hero", element[password[:2]]).names()
+    if password[6] == 'T':
+        temp_stone = True
+    else:
+        temp_stone = False
+
+    hero = create_players.Hero(hero_name, element[password[:2]], life_points=int(password[2:5]), basic_attack, weapon_attack=weapon_attack, temp_stone=temp_stone, elemental_stone=stone[password[5]], xp=int(password[11:15]))
+    print('Got it. Let\'s continue...')
+    time.sleep(2)
+    order_of_levels(hero)
 
 
 def tutorial():
@@ -398,7 +424,7 @@ def generate_password(hero):
         "Air": "AE"
     }
 
-    if hero.life_points == 100:
+    if hero.life_points == 100 or hero.life_points < 1:
         two = '100'
     else:
         two = '0{}'.format(hero.life_points)
