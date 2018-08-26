@@ -122,7 +122,7 @@ def save_hack(password):
     else:
         temp_stone = False
 
-    hero = create_players.Hero(hero_name, element[password[:2]], life_points=int(password[2:5]), basic_attack, weapon_attack=weapon_attack, temp_stone=temp_stone, elemental_stone=stone[password[5]], xp=int(password[11:15]))
+    hero = create_players.Hero(hero_name, element[password[:2]], basic_attack, elemental_stone=stone[password[5]], life_points=int(password[2:5]), xp=int(password[11:15], weapon_attack=weapon_attack, temp_stone=temp_stone))
     print('Got it. Let\'s continue...')
     time.sleep(2)
     order_of_levels(hero)
