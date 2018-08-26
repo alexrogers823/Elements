@@ -196,6 +196,7 @@ def order_of_levels(hero):
     }
 
     level_select = order[hero.element_type]
+    current_level = Gameplay.level_up
 
     level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
     level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
