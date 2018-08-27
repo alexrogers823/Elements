@@ -196,10 +196,13 @@ def order_of_levels(hero):
     }
 
     level_select = order[hero.element_type]
-    current_level = Gameplay.level_up
+    current_level = Gameplay().level_up
 
-    level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
-    level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
+    
+
+    set_level(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2], current_level)
+    # level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
+    # level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
     # level_three(level_select[2], stages[level_select[2]][0])
     # level_four(level_select[3], stages[level_select[3]][0])
     # level_five(level_select[0], stages[level_select[0]][1])
@@ -270,10 +273,47 @@ def user_options(hero, enemy, hero_inventory):
 
     return choice, attack_points, magic_points
 
-def set_level():
+def set_level(chosen_type, stage, hero, minion_name, boss_name, level):
     '''Creates level based on various factors'''
     # unused function. Meant to create all levels using several arguments instead
     # will come back to this. Could be useful for refactoring into cleaner code
+    if level == 1:
+        number_of_enemies = 5
+
+    minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
+    minion_life_points = 20
+    boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
+    boss_life_points = 50
+    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+    print("Welcome to the {}".format(stage))
+    time.sleep(1)
+    print("Stage 1 Begin")
+    time.sleep(1)
+
+    #5 enemies plus boss
+    kills = 0
+    while kills < number_of_enemies:
+        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        # outcome = battle(hero, minion)
+        if battle(hero, minion) == "win":
+            print("{} is defeated! You gain 5 coins".format(minion.name))
+            hero.gain_coins_and_xp = 'minion'
+            # hero.gain_xp = 'minion'
+            time.sleep(1)
+            kills += 1
+        else:
+            game_over(hero, "bad")
+            print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
+            # outcome = battle(hero, boss)
+            if battle(hero, stage_boss) == "win":
+                print("{} is defeated! You beat the level!".format(stage_boss.name))
+                hero.gain_coins_and_xp = 'boss'
+                # hero.gain_xp = 'boss'
+                time.sleep(3)
+                clear_screen()
+                shop(hero)
+            else:
+                game_over(hero, "bad")
 
 
 def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=5):
@@ -301,17 +341,17 @@ def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemie
             kills += 1
         else:
             game_over(hero, "bad")
-    print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
-    # outcome = battle(hero, boss)
-    if battle(hero, stage_boss) == "win":
-        print("{} is defeated! You beat the level!".format(stage_boss.name))
-        hero.gain_coins_and_xp = 'boss'
-        # hero.gain_xp = 'boss'
-        time.sleep(3)
-        clear_screen()
-        shop(hero)
-    else:
-        game_over(hero, "bad")
+            print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
+            # outcome = battle(hero, boss)
+            if battle(hero, stage_boss) == "win":
+                print("{} is defeated! You beat the level!".format(stage_boss.name))
+                hero.gain_coins_and_xp = 'boss'
+                # hero.gain_xp = 'boss'
+                time.sleep(3)
+                clear_screen()
+                shop(hero)
+            else:
+                game_over(hero, "bad")
 
 def level_two(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=8):
     '''Sets level'''
