@@ -6,6 +6,13 @@ import time, math, random, os
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
+def set_gameplay():
+    '''Sets all meta variables before game starts'''
+    play = Gameplay()
+    # main_menu(play)
+    tutorial(play)
+
 # playing with this idea. May or may not have it
 def game_intro(hero):
     print('''\tLong ago, the world was balanced by the elemental forces
@@ -15,6 +22,7 @@ def game_intro(hero):
     who serve them.
     Now, it is up to {} to restore order, and bring an end to great evil once and
     for all...'''.format(hero.name))
+
 
 def battle(hero, enemy):
     # hero_battle = game_items.Battle(hero.life_points, hero.magic_points)
@@ -59,10 +67,10 @@ def battle(hero, enemy):
 
 
 
-def main_menu():
+def main_menu(play):
     '''Where the game starts. Sets default difficulty and mode'''
-    difficulty, game_multiplier, enemy_multiplier = Gameplay().set_difficulty
-    mode = Gameplay().set_mode
+    difficulty, game_multiplier, enemy_multiplier = play.set_difficulty
+    mode = play.set_mode
 
     choices = {
         "[C]hange modes": "change difficulty and modes",
@@ -128,7 +136,7 @@ def save_hack(password):
     order_of_levels(hero)
 
 
-def tutorial():
+def tutorial(play):
     '''Sets tutorial variable to true, and gives tutorial on basics of game'''
     # talk about player types and weaknesses
     # give an example of battle gameplay
@@ -138,7 +146,7 @@ def tutorial():
     # game_intro(hero)
     # shop(hero)
     # generate_password(hero)
-    order_of_levels(hero)
+    order_of_levels(play, hero)
 
 
 
@@ -168,7 +176,7 @@ def create_hero():
 
 
 
-def order_of_levels(hero):
+def order_of_levels(play, hero):
     '''Creates level order based on hero type'''
     # based on hero weakness, cycle levels to where weakness is levels 4 and 9
     # for now, we will have each level as separate function
@@ -196,11 +204,12 @@ def order_of_levels(hero):
     }
 
     level_select = order[hero.element_type]
-    current_level = Gameplay().level_up
+    current_level = play.level_up
+    number_of_enemies = play.call_enemies
+    print(play.level)
 
-    
 
-    set_level(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2], current_level)
+    set_level(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2], current_level, number_of_enemies)
     # level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
     # level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
     # level_three(level_select[2], stages[level_select[2]][0])
@@ -273,12 +282,12 @@ def user_options(hero, enemy, hero_inventory):
 
     return choice, attack_points, magic_points
 
-def set_level(chosen_type, stage, hero, minion_name, boss_name, level):
+def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of_enemies):
     '''Creates level based on various factors'''
     # unused function. Meant to create all levels using several arguments instead
     # will come back to this. Could be useful for refactoring into cleaner code
-    if level == 1:
-        number_of_enemies = 5
+    # if level == 1:
+    #     number_of_enemies = 5
 
     minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
     minion_life_points = 20
@@ -511,4 +520,4 @@ time.sleep(2)
 # game_difficulty = 'normal'
 # game_mode = 'scarce'
 game_multiplier = 1.3
-tutorial()
+set_gameplay()
