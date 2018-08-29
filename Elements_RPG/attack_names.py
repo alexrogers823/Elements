@@ -10,7 +10,7 @@ class Attacks:
     def __str__(self):
         return "Morality: {}, Type: {}".format(self.morality, self.element_type)
 
-    # obsolete function 
+    # obsolete function
     def damage(self, value=0):
         # for hero: basic and mp basic (first); weapon and mp multiplier (second).
         # for enemy: low, high, weapon
@@ -38,11 +38,11 @@ class Attacks:
             attacks = {
                 "Water": [
                             ("Aqua Attack", "Typhoon", "Strong Current"),
-                            ("", "", "")
+                            ("Aquatic Outburst", "Tsunami", "Hydroplanar Eruption")
                         ],
                 "Earth": [
                             ("Earthquake", "Meteor Shower", "Stonewall"),
-                            ("", "", "")
+                            ("Crying Terra", "Rock Shatter", "Geological Crush")
                         ],
                 "Fire": [
                             ("Fireball Blast", "Inferno", "Stream of Flames"),
@@ -50,7 +50,7 @@ class Attacks:
                         ],
                 "Air": [
                             ("Air Rush", "Tornado", "Wind Slash"),
-                            ("Suffication", "", "")
+                            ("Suffication", "Flight of Death", "Ozone Strike")
                         ]
             }
 
