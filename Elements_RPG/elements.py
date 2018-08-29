@@ -13,6 +13,14 @@ def set_gameplay():
     # main_menu(play)
     tutorial(play)
 
+
+def main_play_order(play, hero):
+    if play.level == 0:
+        game_intro(hero)
+    while play.level < 10:
+        order_of_levels(play, hero)
+        shop(hero)
+
 # playing with this idea. May or may not have it
 def game_intro(hero):
     print('''\tLong ago, the world was balanced by the elemental forces
@@ -22,6 +30,7 @@ def game_intro(hero):
     who serve them.
     Now, it is up to {} to restore order, and bring an end to great evil once and
     for all...'''.format(hero.name))
+    input('\nPress ENTER to continue')
 
 
 def battle(hero, enemy):
@@ -32,7 +41,11 @@ def battle(hero, enemy):
     introductions = [
         "A {} stands in your way! Prepare for battle!",
         "Your path is being blocked by a {}! Can you take him?",
-        "Look here, a {} is sizing you up! Kill them"]
+        "Look here, a {} is sizing you up! Kill them",
+        "You've stumbled across a {}, and he looks dangerous!",
+        "All of a sudden a {} approaches! Stand your ground!",
+        "You're face to face with a {}! And he's out for blood"
+        ]
 
     if not enemy.boss:
         print(random.choice(introductions).format(enemy.name))
@@ -86,11 +99,13 @@ def main_menu(play):
 
     if path.lower().startswith('pass'):
         password = input('Password: ')
-        save_hack(password)
+        hero = save_hack(password)
+        main_play_order(play, hero)
     elif path.lower().startswith('ch'):
         change_modes(difficulty, mode)
     else:
-        tutorial()
+        hero = tutorial()
+        main_play_order(play, hero)
 
     #if password isn't blank, unpack it as a tuple. if blank, ask for tutorial
     # and/or go to create_hero
@@ -133,10 +148,10 @@ def save_hack(password):
     hero = create_players.Hero(hero_name, element[password[:2]], basic_attack, elemental_stone=stone[password[5]], life_points=int(password[2:5]), xp=int(password[11:15], weapon_attack=weapon_attack, temp_stone=temp_stone))
     print('Got it. Let\'s continue...')
     time.sleep(2)
-    order_of_levels(hero)
+    return hero
 
 
-def tutorial(play):
+def tutorial():
     '''Sets tutorial variable to true, and gives tutorial on basics of game'''
     # talk about player types and weaknesses
     # give an example of battle gameplay
@@ -146,7 +161,7 @@ def tutorial(play):
     # game_intro(hero)
     # shop(hero)
     # generate_password(hero)
-    order_of_levels(play, hero)
+    return hero
 
 
 
@@ -203,13 +218,32 @@ def order_of_levels(play, hero):
         "Air": ["Wind Sorcerer", "Advanced Wind Sorcerer", "Wind Keeper", "Wind Master"]
     }
 
-    level_select = order[hero.element_type]
-    current_level = play.level_up
+    play.level_up
+
+    if play.level < 5:
+        level_select = order[hero.element_type][play.level-1]
+        stage_select = stages[level_select][0]
+    elif play.level == 9:
+        level_select = order[hero.element_type][play.level-6]
+        stage_select = stages[level_select][1]
+    else:
+        level_select = order[hero.element_type][play.level-5]
+        stage_select = stages[level_select][1]
+
+    minion_name = enemy_names[level_select][0]
+    boss_name = enemy_names[level_select][2]
+
     number_of_enemies = play.call_enemies
-    print(play.level)
+    # print(play.level)
 
 
-    set_level(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2], current_level, number_of_enemies)
+    if play.level == 8:
+        level_eight()
+    elif play.level < 9:
+        set_level(level_select, stage_select, hero, minion_name, boss_name, play.level, number_of_enemies)
+    else:
+        level_ten()
+        elematrix()
     # level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
     # level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
     # level_three(level_select[2], stages[level_select[2]][0])
@@ -298,6 +332,8 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of
     time.sleep(1)
     print("Stage 1 Begin")
     time.sleep(1)
+    print("Enemies: {}".format(number_of_enemies))
+    time.sleep(1)
 
     #5 enemies plus boss
     kills = 0
@@ -312,17 +348,18 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of
             kills += 1
         else:
             game_over(hero, "bad")
-            print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
-            # outcome = battle(hero, boss)
-            if battle(hero, stage_boss) == "win":
-                print("{} is defeated! You beat the level!".format(stage_boss.name))
-                hero.gain_coins_and_xp = 'boss'
-                # hero.gain_xp = 'boss'
-                time.sleep(3)
-                clear_screen()
-                shop(hero)
-            else:
-                game_over(hero, "bad")
+
+    print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
+    # outcome = battle(hero, boss)
+    if battle(hero, stage_boss) == "win":
+        print("{} is defeated! You beat the level!".format(stage_boss.name))
+        hero.gain_coins_and_xp = 'boss'
+        # hero.gain_xp = 'boss'
+        time.sleep(3)
+        clear_screen()
+        # shop(hero)
+    else:
+        game_over(hero, "bad")
 
 
 def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=5):
@@ -460,6 +497,7 @@ def game_over(hero, result):
     # goes to generate_password function based on stats of hero
     print("Use this password to start game with current stats:")
     generate_password(hero)
+    os.exit()
 
 
 def generate_password(hero):
