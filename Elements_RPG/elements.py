@@ -95,13 +95,21 @@ def main_menu(play):
         print('{} to {}'.format(choice, choices[choice]))
 
     # try/except here
-    path = input()
-
-    if path.lower().startswith('pass'):
+    while True:
+        try:
+            path = input()
+            if path == '' or path == None:
+                raise ValueError
+        except ValueError:
+            print('Invalid Selection')
+        else:
+            break
+        
+    if path.lower().startswith('p'):
         password = input('Password: ')
         hero = save_hack(password)
         main_play_order(play, hero)
-    elif path.lower().startswith('ch'):
+    elif path.lower().startswith('c'):
         change_modes(difficulty, mode)
     else:
         hero = tutorial()
@@ -284,10 +292,18 @@ def shop(hero):
     time.sleep(1)
 
 
-def display_stats():
+def display_stats(hero):
     '''Recurring function where full hero statistics are shown at end
     of level, or after shop purchases'''
     # may play with idea of using coins to display during battle
+    print(hero.name)
+    time.sleep(1)
+    print('Coins gained during level: {}')
+    time.sleep(1)
+    print('XP gained during level: {}')
+    time.sleep(1)
+    # if flawless:
+    #     print('Flawless victory!')
 
 
 def user_options(hero, enemy, hero_inventory):
@@ -356,6 +372,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of
         hero.gain_coins_and_xp = 'boss'
         # hero.gain_xp = 'boss'
         time.sleep(3)
+        display_stats(hero)
         clear_screen()
         # shop(hero)
     else:
