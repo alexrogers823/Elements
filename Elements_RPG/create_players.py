@@ -60,6 +60,7 @@ class Hero(Player):
 
         return options
 
+    @property
     def show_attack_damage(self, value):
         damage = [(self.base_normal_damage, 0), (self.base_weapon_damage, 10)]
         return damage[value]
