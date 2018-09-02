@@ -104,7 +104,7 @@ def main_menu(play):
             print('Invalid Selection')
         else:
             break
-        
+
     if path.lower().startswith('p'):
         password = input('Password: ')
         hero = save_hack(password)
@@ -292,10 +292,11 @@ def shop(hero):
     time.sleep(1)
 
 
-def display_stats(hero):
+def display_stats(hero, level):
     '''Recurring function where full hero statistics are shown at end
     of level, or after shop purchases'''
     # may play with idea of using coins to display during battle
+    print('{0} Stage {1} Clear {0}'.format('*'*3, level))
     print(hero.name)
     time.sleep(1)
     print('Coins gained during level: {}')
@@ -346,7 +347,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of
     stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
     print("Welcome to the {}".format(stage))
     time.sleep(1)
-    print("Stage 1 Begin")
+    print("Stage {} Begin".format(level))
     time.sleep(1)
     print("Enemies: {}".format(number_of_enemies))
     time.sleep(1)
@@ -372,7 +373,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of
         hero.gain_coins_and_xp = 'boss'
         # hero.gain_xp = 'boss'
         time.sleep(3)
-        display_stats(hero)
+        display_stats(hero, level)
         clear_screen()
         # shop(hero)
     else:
