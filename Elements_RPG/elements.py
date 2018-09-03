@@ -1,7 +1,7 @@
 from attack_names import Attacks
 from gameplay_mods import Gameplay
 import create_players, game_items
-import time, math, random, os
+import time, math, random, os, sys 
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -10,8 +10,8 @@ def clear_screen():
 def set_gameplay():
     '''Sets all meta variables before game starts'''
     play = Gameplay()
-    # main_menu(play)
-    tutorial(play)
+    main_menu(play)
+    # tutorial(play)
 
 
 def main_play_order(play, hero):
@@ -98,7 +98,7 @@ def main_menu(play):
     while True:
         try:
             path = input()
-            if path == '' or path == None:
+            if not path.lower().startswith('p') and not path.lower().startswith('c') and not path.lower().startswith('s'):
                 raise ValueError
         except ValueError:
             print('Invalid Selection')
@@ -106,14 +106,29 @@ def main_menu(play):
             break
 
     if path.lower().startswith('p'):
-        password = input('Password: ')
+        tries = 0
+        while True:
+            try:
+                if tries > 3:
+                    sys.exit()
+                password = input('Password: ')
+                if password.length > 16 or password[10] != 'X':
+                    raise ValueError
+            except ValueError:
+                print('Invalid Password')
+                tries += 1
+                if tries == 2:
+                    print('Restart the game if password selection was done by mistake')
+            else:
+                break
         hero = save_hack(password)
         main_play_order(play, hero)
     elif path.lower().startswith('c'):
         change_modes(difficulty, mode)
-    else:
+    elif path.lower().startswith('s'):
         hero = tutorial()
         main_play_order(play, hero)
+
 
     #if password isn't blank, unpack it as a tuple. if blank, ask for tutorial
     # and/or go to create_hero
@@ -562,6 +577,7 @@ print('{0} ELEMENTS {0}'.format('-'*10))
 time.sleep(2)
 print('An RPG game on the four powers of life')
 time.sleep(2)
+print()
 
 # main_menu()
 
