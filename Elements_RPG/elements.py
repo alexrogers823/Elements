@@ -1,7 +1,7 @@
 from attack_names import Attacks
 from gameplay_mods import Gameplay
 import create_players, game_items
-import time, math, random, os, sys 
+import time, math, random, os, sys
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -23,6 +23,7 @@ def main_play_order(play, hero):
 
 # playing with this idea. May or may not have it
 def game_intro(hero):
+    print()
     print('''\tLong ago, the world was balanced by the elemental forces
     that were bestowed, in equal strength and harmony.
     \tBut an evil entity took advantage of such strengths and created chaos,
@@ -126,7 +127,7 @@ def main_menu(play):
     elif path.lower().startswith('c'):
         change_modes(difficulty, mode)
     elif path.lower().startswith('s'):
-        hero = tutorial()
+        hero = tutorial(play)
         main_play_order(play, hero)
 
 
@@ -174,17 +175,45 @@ def save_hack(password):
     return hero
 
 
-def tutorial():
+def tutorial(play):
     '''Sets tutorial variable to true, and gives tutorial on basics of game'''
-    # talk about player types and weaknesses
-    # give an example of battle gameplay
-    # talk about XP and coin gains
+    print('Is this your first time playing?')
+    if input().lower().startswith('y'):
+        play.show_tutorials
+        tutorial_explanations()
     # shop and fusion tutorial will happen during gameplay
     hero = create_hero()
     # game_intro(hero)
     # shop(hero)
     # generate_password(hero)
     return hero
+
+def tutorial_explanations():
+    # talk about player types and weaknesses
+    # give an example of battle gameplay
+    # talk about XP and coin gains
+    next = '[Press ENTER]'
+    print('''Welcome!
+    In ELEMENTS, heroes and enemies are based on one of four types: Water, Earth, Fire, and Air
+    Each type has a weakness (Water <--> Fire, Earth <--> Air) that can be used to your or your opponents advantage
+    {}'''.format(next))
+    input()
+    print('''Your hero will start out with 100 life points and 50 magic points. Enemies will vary
+    Enemy damage will reduce your LP, and special/weapon attacks will reduce your MP
+    MP will increase by 5 after every turn, while LP will not increase until level ends
+    If your LP hits zero, it's game over
+    {}'''.format(next))
+    input()
+    print('''Each time you beat an enemy, you gain XP and Coins
+    Higher XP leads to greater hero damage, and you can use coins in the shop (more on this later)
+    {}'''.format(next))
+    input()
+    print('''Shop and fusions will be explained during the game
+    You're ready to pick your hero
+    {}'''.format(next))
+    input()
+
+
 
 
 
