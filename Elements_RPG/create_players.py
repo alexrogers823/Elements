@@ -40,7 +40,7 @@ class Hero(Player):
         self.temp_stone = temp_stone
         self.elemental_stone = elemental_stone
         self.xp = xp
-        self.base_normal_damage = 20
+        self.base_normal_damage = 10
         self.base_weapon_damage = 15
         self.base_weapon_mp = 15
         self.coins = 0
@@ -61,13 +61,13 @@ class Hero(Player):
         return options
 
     @property
-    def show_attack_damage(self, value):
-        damage = [(self.base_normal_damage, 0), (self.base_weapon_damage, 10)]
-        return damage[value]
+    def show_attack_damage(self):
+        damage = ((self.base_normal_damage, 0), (self.base_weapon_damage, self.base_weapon_mp))
+        return damage
 
     @property
     def choose_attack_damage(self):
-        return self.show_attack_damage(0)
+        return self.show_attack_damage
 
     @property
     def stats(self):
@@ -131,7 +131,7 @@ class Hero(Player):
 
     @choose_attack_damage.setter
     def choose_attack_damage(self, attack):
-        return self.show_attack_damage(attack)
+        self.show_attack_damage = attack
 
 
     @gain_coins_and_xp.setter
