@@ -40,7 +40,7 @@ class Hero(Player):
         self.temp_stone = temp_stone
         self.elemental_stone = elemental_stone
         self.xp = xp
-        self.base_normal_damage = 10
+        self.base_normal_damage = 20
         self.base_weapon_damage = 15
         self.base_weapon_mp = 15
         self.coins = 0
@@ -111,6 +111,10 @@ class Hero(Player):
             self.magic_points += 5
 
     @property
+    def lp_replenish(self):
+        return self.life_points
+
+    @property
     def gain_coins_and_xp(self):
         return self.coins, self.xp
 
@@ -128,6 +132,13 @@ class Hero(Player):
     @mp_replenish.setter
     def mp_replenish(self, magic_used):
         self.magic_points -= magic_used
+
+    @lp_replenish.setter
+    def lp_replenish(self, lp_gain):
+        if self.life_points + lp_gain > 100:
+            self.life_points = 100
+        else:
+            self.life_points += lp_gain
 
     @choose_attack_damage.setter
     def choose_attack_damage(self, attack):
