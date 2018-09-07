@@ -34,7 +34,7 @@ def game_intro(hero):
     input('\nPress ENTER to continue')
 
 
-def battle(hero, enemy):
+def battle(hero, enemy, exp_damage):
     # hero_battle = game_items.Battle(hero.life_points, hero.magic_points)
     # enemy_battle = game_items.Battle(enemy.life_points)
     hero_inventory = hero.display_inventory
@@ -64,7 +64,7 @@ def battle(hero, enemy):
 
         enemy.change_base_damage
         enemy_attack, enemy_damage = random.choice([(enemy.low_attack, enemy.base_low_damage), (enemy.high_attack, enemy.base_high_damage), (enemy.weapon_attack, enemy.base_weapon_damage)])
-        enemy_damage = math.ceil(enemy_damage*game_multiplier)
+        enemy_damage = math.ceil(enemy_damage*exp_damage)
         print("The {} attacks with {}, causing {} damage!".format(enemy.name, enemy_attack, enemy_damage))
         hero.attacked = enemy_damage
         if hero.life_points <= 0:
@@ -85,6 +85,8 @@ def main_menu(play):
     '''Where the game starts. Sets default difficulty and mode'''
     difficulty, game_multiplier, enemy_multiplier = play.set_difficulty
     mode = play.set_mode
+
+    print("Current gameplay: {} difficulty, {} LP boost".format(difficulty.title(), mode))
 
     choices = {
         "[C]hange modes": "change difficulty and modes",
@@ -125,7 +127,7 @@ def main_menu(play):
         hero = save_hack(password)
         main_play_order(play, hero)
     elif path.lower().startswith('c'):
-        change_modes(difficulty, mode)
+        change_modes(play)
     elif path.lower().startswith('s'):
         hero = tutorial(play)
         main_play_order(play, hero)
@@ -136,10 +138,13 @@ def main_menu(play):
     # also provide try/except if user enters an invalid password
 
 
-def change_modes(difficulty, mode):
+def change_modes(play):
     '''function that allows user to set difficulty and mode for game'''
     # have information dict/list to show different modes
     # change private (or global) variable on based on user input
+    play.set_difficulty = input("Choose easy, normal, or hard\n")
+    play.set_mode = input("Now choose generous, scarce, or survival\n")
+    main_menu(play)
 
 
 def save_hack(password):
@@ -286,13 +291,14 @@ def order_of_levels(play, hero):
     boss_name = enemy_names[level_select][2]
 
     number_of_enemies = play.call_enemies
+    exp_increase = play.multiplier**(play.level-1)
     # print(play.level)
 
 
     if play.level == 8:
         level_eight()
     elif play.level < 9:
-        set_level(level_select, stage_select, hero, minion_name, boss_name, play.level, number_of_enemies)
+        set_level(level_select, stage_select, hero, minion_name, boss_name, play.level, exp_increase, number_of_enemies)
     else:
         level_ten()
         elematrix()
@@ -370,14 +376,19 @@ def user_options(hero, enemy, hero_inventory):
         number += 1
 
     letter = ord(input().upper()) - 65
+    basic, weapon = hero.choose_attack_damage
     choice = hero_inventory[letter]
-    hero.choose_attack_damage = letter
-    attack_points, magic_points = hero.choose_attack_damage
+    choice_attack = {
+        "A": basic,
+        "B": weapon
+    }
+    # hero.choose_attack_damage = letter
+    attack_points, magic_points = choice_attack[chr(letter+65)]
 
 
     return choice, attack_points, magic_points
 
-def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of_enemies):
+def set_level(chosen_type, stage, hero, minion_name, boss_name, level, exp_damage, number_of_enemies):
     '''Creates level based on various factors'''
     # unused function. Meant to create all levels using several arguments instead
     # will come back to this. Could be useful for refactoring into cleaner code
@@ -401,7 +412,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of
     while kills < number_of_enemies:
         minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
         # outcome = battle(hero, minion)
-        if battle(hero, minion) == "win":
+        if battle(hero, minion, exp_damage) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
             hero.gain_coins_and_xp = 'minion'
             # hero.gain_xp = 'minion'
@@ -412,7 +423,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, number_of
 
     print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
     # outcome = battle(hero, boss)
-    if battle(hero, stage_boss) == "win":
+    if battle(hero, stage_boss, exp_damage) == "win":
         print("{} is defeated! You beat the level!".format(stage_boss.name))
         hero.gain_coins_and_xp = 'boss'
         # hero.gain_xp = 'boss'
@@ -559,7 +570,7 @@ def game_over(hero, result):
     # goes to generate_password function based on stats of hero
     print("Use this password to start game with current stats:")
     generate_password(hero)
-    os.exit()
+    sys.exit()
 
 
 def generate_password(hero):
