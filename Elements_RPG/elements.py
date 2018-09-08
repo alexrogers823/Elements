@@ -115,7 +115,7 @@ def main_menu(play):
                 if tries > 3:
                     sys.exit()
                 password = input('Password: ')
-                if password.length > 16 or password[10] != 'X':
+                if len(password) > 16 or password[10] != 'X':
                     raise ValueError
             except ValueError:
                 print('Invalid Password')
@@ -167,14 +167,14 @@ def save_hack(password):
     }
 
     # ask the player for the hero's name again
-    hero_name = input('I forgot your hero\'s name again. What was it?')
+    hero_name = input('I forgot your hero\'s name again. What was it?\n')
     basic_attack, weapon_attack = Attacks("hero", element[password[:2]]).names()
     if password[6] == 'T':
         temp_stone = True
     else:
         temp_stone = False
 
-    hero = create_players.Hero(hero_name, element[password[:2]], basic_attack, elemental_stone=stone[password[5]], life_points=int(password[2:5]), xp=int(password[11:15], weapon_attack=weapon_attack, temp_stone=temp_stone))
+    hero = create_players.Hero(hero_name, element[password[:2]], life_points=int(password[2:5]), basic_attack=basic_attack, elemental_stone=stone[password[5]], xp=int(password[11:15]), weapon_attack=weapon_attack, temp_stone=temp_stone)
     print('Got it. Let\'s continue...')
     time.sleep(2)
     return hero
@@ -276,6 +276,7 @@ def order_of_levels(play, hero):
     }
 
     play.level_up
+    hero.lp_replenish = play.lp_replenish
 
     if play.level < 5:
         level_select = order[hero.element_type][play.level-1]
@@ -298,7 +299,7 @@ def order_of_levels(play, hero):
     if play.level == 8:
         level_eight()
     elif play.level < 9:
-        set_level(level_select, stage_select, hero, minion_name, boss_name, play.level, exp_increase, number_of_enemies)
+        set_level(play, level_select, stage_select, hero, minion_name, boss_name, play.level, exp_increase, number_of_enemies)
     else:
         level_ten()
         elematrix()
@@ -388,7 +389,7 @@ def user_options(hero, enemy, hero_inventory):
 
     return choice, attack_points, magic_points
 
-def set_level(chosen_type, stage, hero, minion_name, boss_name, level, exp_damage, number_of_enemies):
+def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp_damage, number_of_enemies):
     '''Creates level based on various factors'''
     # unused function. Meant to create all levels using several arguments instead
     # will come back to this. Could be useful for refactoring into cleaner code
@@ -396,7 +397,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, exp_damag
     #     number_of_enemies = 5
 
     minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
-    minion_life_points = 20
+    minion_life_points = math.floor(20*exp_damage)
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 50
     stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
@@ -419,7 +420,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, exp_damag
             time.sleep(1)
             kills += 1
         else:
-            game_over(hero, "bad")
+            game_over(hero, "bad", play)
 
     print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
     # outcome = battle(hero, boss)
@@ -432,7 +433,7 @@ def set_level(chosen_type, stage, hero, minion_name, boss_name, level, exp_damag
         clear_screen()
         # shop(hero)
     else:
-        game_over(hero, "bad")
+        game_over(hero, "bad", play)
 
 
 def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=5):
@@ -555,7 +556,7 @@ def elematrix():
         time.sleep(1)
 
 
-def game_over(hero, result):
+def game_over(hero, result, play):
     '''signals end of game to user'''
     # if hero is killed, gives bad message
     if result == 'bad':
@@ -569,11 +570,11 @@ def game_over(hero, result):
     time.sleep(2)
     # goes to generate_password function based on stats of hero
     print("Use this password to start game with current stats:")
-    generate_password(hero)
+    generate_password(hero, play.level)
     sys.exit()
 
 
-def generate_password(hero):
+def generate_password(hero, level):
     '''After game ends, this will generate a password based on hero stats,
     so that user can choose to start game with these stats next time'''
     # will use hero object to pack/unpack statistics into password
@@ -607,7 +608,12 @@ def generate_password(hero):
     else:
         six = '0{}'.format(hero.xp)
 
-    print('{}{}{}{}{}X{}'.format(one[hero.element_type], two, three, four, five, six))
+    if level > 2 or level < 10:
+        seven = '0{}'.format(level)
+    else:
+        seven = ''
+
+    print('{}{}{}{}{}X{}{}'.format(one[hero.element_type], two, three, four, five, six, seven))
 
 
 
