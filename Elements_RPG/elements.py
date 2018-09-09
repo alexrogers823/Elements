@@ -56,6 +56,7 @@ def battle(hero, enemy, exp_damage):
         attack, damage, magic_used = user_options(hero, enemy, hero_inventory)
         print("You attack with {}, causing {} damage!".format(attack, damage))
         time.sleep(1)
+        # if hero elemental stone == enemy type, lower the damage
         enemy.attacked = damage
         hero.mp_replenish = magic_used
         if enemy.life_points <= 0:
