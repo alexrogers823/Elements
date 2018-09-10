@@ -219,6 +219,14 @@ def tutorial_explanations():
     {}'''.format(next))
     input()
 
+def tutorial_shop(hero):
+    print('''Welcome to the shop!
+    This is where you can buy things for {} that will help in battles.
+    For example, {} has {} coins, and {} costs 100 coins. You can buy it now.
+    Also, you see {}'s XP. Higher XP leads to more impactful attacks.
+    I'll let you take a look around.
+    [ENTER to continue]''')
+
 
 
 
