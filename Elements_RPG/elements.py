@@ -229,8 +229,6 @@ def tutorial_shop(hero):
 
 
 
-
-
 def create_hero():
     '''Sets hero name and type to use throughout gameplay'''
     print("Create your hero. Choose wisely!")
@@ -352,16 +350,16 @@ def shop(hero):
     time.sleep(1)
 
 
-def display_stats(hero, level):
+def display_stats(hero, level, coins, xp):
     '''Recurring function where full hero statistics are shown at end
     of level, or after shop purchases'''
     # may play with idea of using coins to display during battle
     print('{0} Stage {1} Clear {0}'.format('*'*3, level))
     print(hero.name)
     time.sleep(1)
-    print('Coins gained during level: {}')
+    print('Coins gained during level: {}'.format(coins))
     time.sleep(1)
-    print('XP gained during level: {}')
+    print('XP gained during level: {}'.format(xp))
     time.sleep(1)
     # if flawless:
     #     print('Flawless victory!')
@@ -399,6 +397,8 @@ def user_options(hero, enemy, hero_inventory):
     return choice, attack_points, magic_points
 
 def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp_damage, number_of_enemies):
+    level_coins = 0
+    level_xp = 0
     '''Creates level based on various factors'''
     # unused function. Meant to create all levels using several arguments instead
     # will come back to this. Could be useful for refactoring into cleaner code
@@ -425,6 +425,8 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
         if battle(hero, minion, exp_damage) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
             hero.gain_coins_and_xp = 'minion'
+            level_coins += 5
+            level_xp += 5
             # hero.gain_xp = 'minion'
             time.sleep(1)
             kills += 1
@@ -436,9 +438,11 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     if battle(hero, stage_boss, exp_damage) == "win":
         print("{} is defeated! You beat the level!".format(stage_boss.name))
         hero.gain_coins_and_xp = 'boss'
+        level_coins += 75
+        level_xp += 50
         # hero.gain_xp = 'boss'
         time.sleep(3)
-        display_stats(hero, level)
+        display_stats(hero, level, level_coins, level_xp)
         clear_screen()
         # shop(hero)
     else:
