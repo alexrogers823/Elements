@@ -355,6 +355,7 @@ def display_stats(hero, level, coins, xp):
     of level, or after shop purchases'''
     # may play with idea of using coins to display during battle
     print('{0} Stage {1} Clear {0}'.format('*'*3, level))
+    print()
     print(hero.name)
     time.sleep(1)
     print('Coins gained during level: {}'.format(coins))
