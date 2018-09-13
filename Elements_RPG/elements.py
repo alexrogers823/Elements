@@ -327,6 +327,8 @@ def shop(hero):
     '''Where user can purchase upgrades for their hero'''
     # show weapons and stones, and how much each cost
     # make sure hero can only equip one elemental stone
+    if play.tutorial == True:
+        tutorial_shop()
     while True:
         print("{0} SHOP {0}".format("-"*5))
         print("Type in the first three letters of item to purchase.")
