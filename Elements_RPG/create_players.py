@@ -44,6 +44,7 @@ class Hero(Player):
         self.base_weapon_damage = 15
         self.base_weapon_mp = 15
         self.coins = 0
+        self.enemies_killed = 0
 
     @property
     def display_inventory(self):
@@ -59,6 +60,10 @@ class Hero(Player):
                 options.add(item)
 
         return options
+
+    @property
+    def killed_enemies(self):
+        self.enemies_killed += 1
 
     @property
     def show_attack_damage(self):
