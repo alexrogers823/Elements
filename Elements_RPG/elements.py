@@ -19,7 +19,7 @@ def main_play_order(play, hero):
         game_intro(hero)
     while play.level < 10:
         order_of_levels(play, hero)
-        shop(hero)
+        shop(hero, play)
 
 # playing with this idea. May or may not have it
 def game_intro(hero):
@@ -74,6 +74,7 @@ def battle(hero, enemy, exp_damage):
         hero.mp_replenish
 
     if enemy.life_points <= 0:
+        hero.killed_enemies = 1 #Temporary solution
         return "win"
     else:
         return "loss"
@@ -323,7 +324,7 @@ def order_of_levels(play, hero):
 
 
 
-def shop(hero):
+def shop(hero, play):
     '''Where user can purchase upgrades for their hero'''
     # show weapons and stones, and how much each cost
     # make sure hero can only equip one elemental stone
@@ -372,7 +373,8 @@ def user_options(hero, enemy, hero_inventory):
     '''Recurring function that displays what hero can do to attack during gameplay'''
     # 'Hero's move
     print()
-    print(hero.stats)
+    print(hero.stats, end=" | ")
+    print("Enemies killed: {}".format(hero.killed_enemies))
     print("{0} VS {0}".format("-"*3))
     print(enemy.stats)
     print("Your move")
@@ -423,6 +425,7 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     #5 enemies plus boss
     kills = 0
     while kills < number_of_enemies:
+
         minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
         # outcome = battle(hero, minion)
         if battle(hero, minion, exp_damage) == "win":
