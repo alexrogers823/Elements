@@ -74,7 +74,7 @@ def battle(hero, enemy, exp_damage):
         hero.mp_replenish
 
     if enemy.life_points <= 0:
-        hero.killed_enemies = 1 #Temporary solution
+        hero.killed_enemies #Temporary solution
         return "win"
     else:
         return "loss"
@@ -374,7 +374,7 @@ def user_options(hero, enemy, hero_inventory):
     # 'Hero's move
     print()
     print(hero.stats, end=" | ")
-    print("Enemies killed: {}".format(hero.killed_enemies))
+    print("Enemies killed: {}".format(hero.enemies_killed))
     print("{0} VS {0}".format("-"*3))
     print(enemy.stats)
     print("Your move")

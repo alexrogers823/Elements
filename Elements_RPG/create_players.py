@@ -63,7 +63,7 @@ class Hero(Player):
 
     @property
     def killed_enemies(self):
-        return self.enemies_killed
+        self.enemies_killed += 1
 
     @property
     def show_attack_damage(self):
@@ -138,9 +138,6 @@ class Hero(Player):
     def mp_replenish(self, magic_used):
         self.magic_points -= magic_used
 
-    @killed_enemies.setter
-    def killed_enemies(self, kill):
-        self.enemies_killed += kill
 
     @lp_replenish.setter
     def lp_replenish(self, lp_gain):
