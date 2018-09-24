@@ -417,7 +417,7 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
     print("Welcome to the {}".format(stage))
     time.sleep(1)
-    print("Stage {} Begin".format(level))
+    print("{0} Stage {1} Begin {0}".format(("~", level))
     time.sleep(1)
     print("Enemies: {}".format(number_of_enemies))
     time.sleep(1)
@@ -608,7 +608,31 @@ def level_nine():
 
 def level_ten():
     '''Sets level'''
+    #refactor all of this
+    minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
+    minion_life_points = 20
+    boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
+    boss_life_points = 70
+    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
 
+    print("Welcome to Element Dimension")
+    time.sleep(1)
+    print("Final Stage Begin")
+    time.sleep(1)
+
+    kills = 0
+    while kills < number_of_enemies:
+        #refactor minion variable
+        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        # outcome = battle(hero, minion)
+        if battle(hero, minion) == "win":
+            print("{} is defeated! You gain 5 coins".format(minion.name))
+            hero.gain_coins_and_xp = 'minion'
+            # hero.gain_xp = 'minion'
+            time.sleep(1)
+            kills += 1
+        else:
+            game_over(hero, "bad")
 
 def elematrix():
     '''Introduces boss and continues level 10'''
