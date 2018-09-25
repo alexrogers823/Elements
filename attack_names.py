@@ -51,7 +51,11 @@ class Attacks:
                 "Air": [
                             ("Air Rush", "Tornado", "Wind Slash"),
                             ("Suffication", "Flight of Death", "Ozone Strike")
-                        ]
+                        ],
+                "Lightning": [
+                            ("Static Shock", "Jolt of Electricity", "Bolt Strike"),
+                            ("1000 Watts", "2000 Watts", "Surge Line")
+                ]
             }
 
             if self.boss == True:
