@@ -1,6 +1,6 @@
-from game_items import Inventory
-from game_items import Item
-from attack_names import Attacks
+from .game_items import Inventory
+from .game_items import Item
+from .attack_names import Attacks
 
 class Player:
     def __init__(self, name="John Doe", element_type="", life_points=0, has_weapon=False, weapon_attack="", *args, **kwargs):
