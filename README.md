@@ -22,9 +22,9 @@ Users will create a hero with a chosen element that determines their attacks and
 ## Getting started
 Elements is run on Python 3, so you will need to have that installed.
 
-To install Python 3...(complete this)
+To install Python 3, [click here](https://www.python.org/downloads/)
 
-Once installed, you can download Elements manually, or inputting (git clone input) into your terminal.
+Once installed, you can [download](https://github.com/alexrogers823/Elements/archive/master.zip) Elements manually, or inputting `git clone git@github.com:alexrogers823/Elements.git` into your terminal.
 
 ## Author
 All code written by [Alex Rogers](https://github.com/alexrogers823 "Alex Rogers' GitHub page")
@@ -35,7 +35,7 @@ After writing a lot of scripted and functional programs, I wanted to get better 
 #### Challenges and Solutions
 - Early on, I had a challenge understanding getters and setters in classes, and when they were necessary in the code. I solved this by referring back to my blueprint of what variables were going to change during gameplay.
 - Another challenge was deciding what would be in the main program and what needed to be imported as a separate file. This helped me to learn more about abstraction.
-- Getting the save feature to work by a user-inputted password was challenging
+- Getting the save feature to work by a user-inputted password was challenging.
 
 #### Improvements/Additional Features
 - Diversify character names and attacks
