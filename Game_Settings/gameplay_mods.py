@@ -8,6 +8,9 @@ class Gameplay:
         self.level = 0
         self.tutorial = False
 
+    def set_level(self, num):
+        self.level = num
+
     @property
     def set_difficulty(self):
         return self.difficulty, self.multiplier, self.enemy_multiplier

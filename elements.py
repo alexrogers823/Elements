@@ -68,6 +68,7 @@ def battle(hero, enemy, exp_damage):
         enemy_attack, enemy_damage = random.choice([(enemy.low_attack, enemy.base_low_damage), (enemy.high_attack, enemy.base_high_damage), (enemy.weapon_attack, enemy.base_weapon_damage)])
         enemy_damage = math.ceil(enemy_damage*exp_damage)
         print("The {} attacks with {}, causing {} damage!".format(enemy.name, enemy_attack, enemy_damage))
+        time.sleep(1)
         hero.attacked = enemy_damage
         if hero.life_points <= 0:
             break
@@ -118,7 +119,7 @@ def main_menu(play):
                 if tries > 3:
                     sys.exit()
                 password = input('Password: ')
-                if len(password) > 16 or password[10] != 'X':
+                if password[10] != 'X':
                     raise ValueError
             except ValueError:
                 print('Invalid Password')
@@ -127,7 +128,7 @@ def main_menu(play):
                     print('Restart the game if password selection was done by mistake')
             else:
                 break
-        hero = save_hack(password)
+        hero = save_hack(password, play)
         main_play_order(play, hero)
     elif path.lower().startswith('c'):
         change_modes(play)
@@ -150,7 +151,7 @@ def change_modes(play):
     main_menu(play)
 
 
-def save_hack(password):
+def save_hack(password, play):
     '''Function that re-creates a previous hero based on password user inputted'''
     # create a tuple or dictionary using password via packing/unpacking
     # use inherited class to re-create hero using tuple and name
@@ -177,9 +178,13 @@ def save_hack(password):
     else:
         temp_stone = False
 
-    hero = create_players.Hero(hero_name, element[password[:2]], life_points=int(password[2:5]), basic_attack=basic_attack, elemental_stone=stone[password[5]], xp=int(password[11:15]), weapon_attack=weapon_attack, temp_stone=temp_stone)
+    if password[-1] != 'L':
+        play.set_level(int(password[-2:]))
+
+    hero = Hero(hero_name, element[password[:2]], basic_attack, Inventory, Item, Attacks, int(password[7:9]), temp_stone=temp_stone, elemental_stone=stone[password[5]], weapon_attack=weapon_attack, xp=int(password[11:15]))
     print('Got it. Let\'s continue...')
     time.sleep(2)
+    # print(play.level)
     return hero
 
 
@@ -253,7 +258,7 @@ def create_hero():
     # after deciding, a hero is made using the inherited class that was imported
     print("Creating hero {}".format(hero_name))
     time.sleep(3)
-    return create_players.Hero(hero_name, element_type, basic_attack, weapon_attack=weapon_attack)
+    return Hero(hero_name, element_type, basic_attack, weapon_attack=weapon_attack)
 
 
 
@@ -330,7 +335,7 @@ def shop(hero, play):
     # show weapons and stones, and how much each cost
     # make sure hero can only equip one elemental stone
     if play.tutorial == True:
-        tutorial_shop()
+        tutorial_shop(hero)
     while True:
         print("{0} SHOP {0}".format("-"*5))
         print("Type in the first three letters of item to purchase.")
@@ -365,7 +370,7 @@ def display_stats(hero, level, coins, xp):
     print('Coins gained during level: {}'.format(coins))
     time.sleep(1)
     print('XP gained during level: {}'.format(xp))
-    time.sleep(1)
+    time.sleep(4)
     # if flawless:
     #     print('Flawless victory!')
 
@@ -390,6 +395,7 @@ def user_options(hero, enemy, hero_inventory):
         number += 1
 
     letter = ord(input().upper()) - 65
+    # Need to include try/except to keep user to doing invalid inputs
     basic, weapon = hero.choose_attack_damage
     choice = hero_inventory[letter]
     choice_attack = {
@@ -415,10 +421,10 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     minion_life_points = math.floor(20*exp_damage)
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 50
-    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+    stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
     print("Welcome to the {}".format(stage))
     time.sleep(1)
-    print("{0} Stage {1} Begin {0}".format(("~", level)))
+    print("{0} Stage {1} Begin {0}".format("~", level))
     time.sleep(1)
     print("Enemies: {}".format(number_of_enemies))
     time.sleep(1)
@@ -427,7 +433,7 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     kills = 0
     while kills < number_of_enemies:
 
-        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
         # outcome = battle(hero, minion)
         if battle(hero, minion, exp_damage) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
@@ -465,7 +471,7 @@ def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemie
     minion_life_points = 20
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 50
-    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+    stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
     print("Welcome to the {}".format(stage))
     time.sleep(1)
     print("Stage 1 Begin")
@@ -474,7 +480,7 @@ def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemie
     #5 enemies plus boss
     kills = 0
     while kills < number_of_enemies:
-        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
         # outcome = battle(hero, minion)
         if battle(hero, minion) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
@@ -502,7 +508,7 @@ def level_two(chosen_type, stage, hero, minion_name, boss_name, number_of_enemie
     minion_life_points = 20
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 70
-    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+    stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
     print("Welcome to the {}".format(stage))
     time.sleep(1)
     print("Stage 2 Begin")
@@ -511,7 +517,7 @@ def level_two(chosen_type, stage, hero, minion_name, boss_name, number_of_enemie
     #8 enemies plus boss
     kills = 0
     while kills < number_of_enemies:
-        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
         # outcome = battle(hero, minion)
         if battle(hero, minion) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
@@ -565,7 +571,7 @@ def level_eight():
     minion_life_points = 20
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 70
-    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+    stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
 
     print("Welcome to Lightning Tower")
     time.sleep(1)
@@ -577,7 +583,7 @@ def level_eight():
     kills = 0
     while kills < number_of_enemies:
         #refactor minion variable
-        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
         # outcome = battle(hero, minion)
         if battle(hero, minion) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
@@ -624,7 +630,7 @@ def level_ten():
     minion_life_points = 20
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 70
-    stage_boss = create_players.Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+    stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
 
     print("Welcome to Element Dimension")
     time.sleep(1)
@@ -634,7 +640,7 @@ def level_ten():
     kills = 0
     while kills < number_of_enemies:
         #refactor minion variable
-        minion = create_players.Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
+        minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
         # outcome = battle(hero, minion)
         if battle(hero, minion) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
@@ -714,12 +720,12 @@ def generate_password(hero, level):
     else:
         six = '0{}'.format(hero.xp)
 
-    if level > 2 or level < 10:
-        seven = '0{}'.format(level)
+    if level > 1 or level < 10:
+        seven = '0{}'.format(level-1) # Because play.level will one up when setting level
     else:
         seven = ''
 
-    print('{}{}{}{}{}X{}{}'.format(one[hero.element_type], two, three, four, five, six, seven))
+    print('{}{}{}{}{}X{}L{}'.format(one[hero.element_type], two, three, four, five, six, seven))
 
 
 
