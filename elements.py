@@ -455,6 +455,9 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     else:
         game_over(hero, "bad", play)
 
+def cutscene():
+    pass
+
 
 def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=5):
     '''Sets level'''
@@ -595,7 +598,9 @@ def level_eight():
 
     #Dont have the battle function in the if statement. Also change print statement
     if battle(hero, stage_boss, exp_damage) == "win":
-        print("{} is defeated! You beat the level!".format(stage_boss.name))
+        print("The fusion boss is defeated! You beat the level!")
+        time.sleep(2)
+        print("Very impressive!")
         hero.gain_coins_and_xp = 'boss'
         level_coins += 75
         level_xp += 50
@@ -639,6 +644,8 @@ def level_ten():
             kills += 1
         else:
             game_over(hero, "bad")
+
+    elematrix()
 
 def elematrix():
     '''Introduces boss and continues level 10'''
