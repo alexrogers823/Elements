@@ -178,10 +178,17 @@ def save_hack(password, play):
     else:
         temp_stone = False
 
+    if password[9] > '0':
+        weapon = True
+        weapon_level = password[9]
+    else:
+        weapon = False
+        weapon_level = 0
+
     if password[-1] != 'L':
         play.set_level(int(password[-2:]))
 
-    hero = Hero(hero_name, element[password[:2]], basic_attack, Inventory, Item, Attacks, int(password[7:9]), temp_stone=temp_stone, elemental_stone=stone[password[5]], weapon_attack=weapon_attack, xp=int(password[11:15]))
+    hero = Hero(hero_name, element[password[:2]], basic_attack, Inventory, Item, Attacks, int(password[7:9]), temp_stone=temp_stone, elemental_stone=stone[password[5]], has_weapon=weapon, weapon_attack=weapon_attack, weapon_level=weapon_level, xp=int(password[11:14]))
     print('Got it. Let\'s continue...')
     time.sleep(2)
     # print(play.level)
@@ -400,8 +407,12 @@ def user_options(hero, enemy, hero_inventory):
         try:
             letter = ord(input().upper()) - 65
             if chr(letter+65) not in valid_inputs:
+                raise IndexError
+            if hero_inventory[letter].startswith('(Locked'):
                 raise ValueError
         except ValueError:
+            print("You cannot use this attack until your weapon is bought. Choose again")
+        except IndexError:
             print("Invalid input. Choose again")
         except TypeError:
             print("Invalid input. Choose again")
@@ -449,6 +460,7 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
         # outcome = battle(hero, minion)
         if battle(hero, minion, exp_damage) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
+            print()
             hero.gain_coins_and_xp = 'minion'
             level_coins += 5
             level_xp += 5
@@ -725,12 +737,14 @@ def generate_password(hero, level):
 
     four = hero.magic_points
 
-    five = 1 #weapon level. Will do later
+    five = hero.weapon_level #weapon level. Will do later
 
-    if hero.xp > 1000:
-        six = hero.xp
-    else:
-        six = '0{}'.format(hero.xp)
+    # if hero.xp > 1000:
+    #     six = hero.xp
+    # else:
+    #     six = '0{}'.format(hero.xp)
+
+    six = hero.xp if hero.xp > 1000 else '0{}'.format(hero.xp)
 
     if level > 1 or level < 10:
         seven = '0{}'.format(level-1) # Because play.level will one up when setting level

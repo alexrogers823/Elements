@@ -29,8 +29,8 @@ class Player:
 
 
 class Hero(Player):
-    def __init__(self, name, element_type, basic_attack, inventory=Inventory, item_name=Item, attack_points=Attacks, magic_points=50, temp_stone=False, elemental_stone="", weapon_attack="", xp=0, *args, **kwargs):
-        super().__init__(name=name, element_type=element_type, life_points=100, has_weapon=False, weapon_attack=weapon_attack, *args, **kwargs)
+    def __init__(self, name, element_type, basic_attack, inventory=Inventory, item_name=Item, attack_points=Attacks, magic_points=50, temp_stone=False, elemental_stone="", weapon_attack="", weapon_level=0, xp=0, *args, **kwargs):
+        super().__init__(name=name, element_type=element_type, life_points=100, weapon_attack=weapon_attack, *args, **kwargs)
         # self.life_points = 100
         self.magic_points = magic_points
         self.basic_attack = basic_attack
@@ -45,6 +45,7 @@ class Hero(Player):
         self.base_weapon_mp = 15
         self.coins = 0
         self.enemies_killed = 0
+        self.weapon_level = weapon_level
 
     @property
     def display_inventory(self):
@@ -85,9 +86,10 @@ class Hero(Player):
 
     @property
     def display_shop_options(self):
+
         shop_list = self.inventory()
         stones = ['water', 'earth', 'fire', 'air']
-        weapon = self.item_name('Weapon of Great {}'.format(self.element_type), 'Your weapon for greater attacks. Can upgrade')
+        weapon = self.item_name('Weapon - {}'.format(self.weapon_attack), 'Your weapon for greater attacks. Can upgrade')
         if self.has_weapon == False:
             shop_list.add([weapon.name.title(), 100, weapon.description])
         else:
@@ -172,6 +174,7 @@ class Hero(Player):
     def acquire_items(self, bought):
         if bought == "weapon":
             self.has_weapon = True
+            self.weapon_level += 1
             self.coins -= 100
         if bought == "temp stone":
             self.temp_stone = True
