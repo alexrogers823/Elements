@@ -390,11 +390,23 @@ def user_options(hero, enemy, hero_inventory):
     # display stones
     number = 0 #Hack-ish
     option_mp = [0, 10, 15] #Also hack-ish
+    valid_inputs = []
     for option in hero_inventory:
         print('[{}]  {} ({} MP)'.format(chr(number+65), option, option_mp[number]))
+        valid_inputs.append(chr(number+65))
         number += 1
 
-    letter = ord(input().upper()) - 65
+    while True:
+        try:
+            letter = ord(input().upper()) - 65
+            if chr(letter+65) not in valid_inputs:
+                raise ValueError
+        except ValueError:
+            print("Invalid input. Choose again")
+        except TypeError:
+            print("Invalid input. Choose again")
+        else:
+            break
     # Need to include try/except to keep user to doing invalid inputs
     basic, weapon = hero.choose_attack_damage
     choice = hero_inventory[letter]
