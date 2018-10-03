@@ -3,7 +3,7 @@ class Gameplay:
         self.difficulty = "normal"
         self.mode = "scarce"
         self.lp_replenish = 20
-        self.multiplier = 1.3
+        self.multiplier = 1.15
         self.enemy_multiplier = 1
         self.level = 0
         self.tutorial = False
@@ -50,8 +50,8 @@ class Gameplay:
     def set_difficulty(self, value):
         valid_diffs = {
             "easy": ("easy", 1.1, 0.7),
-            "normal": ("normal", 1.3, 1),
-            "hard": ("hard", 1.8, 1.5)
+            "normal": ("normal", 1.15, 1),
+            "hard": ("hard", 1.2, 1.5)
         }
         if value.lower() in valid_diffs:
             self.difficulty, self.multiplier, self.enemy_multiplier = valid_diffs[value.lower()]
