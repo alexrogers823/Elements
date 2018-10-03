@@ -41,11 +41,11 @@ class Hero(Player):
         self.elemental_stone = elemental_stone
         self.xp = xp
         self.base_normal_damage = 20
-        self.base_weapon_damage = 15
+        self.base_weapon_damage = 30
         self.base_weapon_mp = 15
         self.coins = 0
         self.enemies_killed = 0
-        self.weapon_level = weapon_level
+        self.weapon_level = int(weapon_level)
 
     @property
     def display_inventory(self):

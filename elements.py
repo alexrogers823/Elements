@@ -90,14 +90,15 @@ def main_menu(play):
     difficulty, game_multiplier, enemy_multiplier = play.set_difficulty
     mode = play.set_mode
 
-    print("Current gameplay: {} difficulty, {} LP boost".format(difficulty.title(), mode))
+    print("Current gameplay: {} difficulty, {} LP boost".format(difficulty.title(), mode.title()))
 
     choices = {
         "[C]hange modes": "change difficulty and modes",
         "[S]tart game": "start playing",
         "[P]assword": "enter save password"
     }
-    print('Welcome! Choose from the following options')
+    print('Welcome! Choose from the following options:')
+    print()
     for choice in choices.keys():
         print('{} to {}'.format(choice, choices[choice]))
 
@@ -319,11 +320,11 @@ def order_of_levels(play, hero):
 
     if play.level == 8:
         level_eight()
-    elif play.level < 9:
+    elif play.level <= 9:
         set_level(play, level_select, stage_select, hero, minion_name, boss_name, play.level, exp_increase, number_of_enemies)
     else:
         level_ten()
-        elematrix()
+
     # level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
     # level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
     # level_three(level_select[2], stages[level_select[2]][0])
@@ -410,12 +411,14 @@ def user_options(hero, enemy, hero_inventory):
                 raise IndexError
             if hero_inventory[letter].startswith('(Locked'):
                 raise ValueError
+            if option_mp[letter] > hero.magic_points:
+                raise Exception
         except ValueError:
             print("You cannot use this attack until your weapon is bought. Choose again")
-        except IndexError:
+        except (IndexError, TypeError):
             print("Invalid input. Choose again")
-        except TypeError:
-            print("Invalid input. Choose again")
+        except Exception:
+            print("Not enough MP. Choose again")
         else:
             break
     # Need to include try/except to keep user to doing invalid inputs
@@ -735,7 +738,7 @@ def generate_password(hero, level):
     else:
         three = 'OO'
 
-    four = hero.magic_points
+    four = hero.magic_points if hero.magic_points > 10 else '0{}'.format(hero.magic_points)
 
     five = hero.weapon_level #weapon level. Will do later
 
