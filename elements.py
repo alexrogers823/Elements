@@ -489,82 +489,9 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
         game_over(hero, "bad", play)
 
 def cutscene():
+    # Actual text will be from a class, and be re-routed here
     pass
 
-
-def level_one(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=5):
-    '''Sets level'''
-    minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
-    minion_life_points = 20
-    boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
-    boss_life_points = 50
-    stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
-    print("Welcome to the {}".format(stage))
-    time.sleep(1)
-    print("Stage 1 Begin")
-    time.sleep(1)
-
-    #5 enemies plus boss
-    kills = 0
-    while kills < number_of_enemies:
-        minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
-        # outcome = battle(hero, minion)
-        if battle(hero, minion) == "win":
-            print("{} is defeated! You gain 5 coins".format(minion.name))
-            hero.gain_coins_and_xp = 'minion'
-            # hero.gain_xp = 'minion'
-            time.sleep(1)
-            kills += 1
-        else:
-            game_over(hero, "bad")
-            print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
-            # outcome = battle(hero, boss)
-            if battle(hero, stage_boss) == "win":
-                print("{} is defeated! You beat the level!".format(stage_boss.name))
-                hero.gain_coins_and_xp = 'boss'
-                # hero.gain_xp = 'boss'
-                time.sleep(3)
-                clear_screen()
-                shop(hero)
-            else:
-                game_over(hero, "bad")
-
-def level_two(chosen_type, stage, hero, minion_name, boss_name, number_of_enemies=8):
-    '''Sets level'''
-    minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
-    minion_life_points = 20
-    boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
-    boss_life_points = 70
-    stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
-    print("Welcome to the {}".format(stage))
-    time.sleep(1)
-    print("Stage 2 Begin")
-    time.sleep(1)
-
-    #8 enemies plus boss
-    kills = 0
-    while kills < number_of_enemies:
-        minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
-        # outcome = battle(hero, minion)
-        if battle(hero, minion) == "win":
-            print("{} is defeated! You gain 5 coins".format(minion.name))
-            hero.gain_coins_and_xp = 'minion'
-            # hero.gain_xp = 'minion'
-            time.sleep(1)
-            kills += 1
-        else:
-            game_over(hero, "bad")
-    print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
-    # outcome = battle(hero, boss)
-    if battle(hero, stage_boss) == "win":
-        print("{} is defeated! You beat the level!".format(stage_boss.name))
-        hero.gain_coins_and_xp = 'boss'
-        # hero.gain_xp = 'boss'
-        time.sleep(3)
-        # clear_screen()
-        # shop(hero)
-    else:
-        game_over(hero, "bad")
 
 
 def level_three():
@@ -626,8 +553,21 @@ def level_eight():
     time.sleep(2)
 
     #Pseudo-code here: create Pyro-Circuit
+    pyro_low_attack, pyro_high_attack, pyro_weapon_attack = Attacks("enemy", "Fire", boss=True).names()
+    pyro = Enemy("Pyro-Circuit", "Fire", boss_life_points, pyro_low_attack, pyro_high_attack, weapon_attack=pyro_weapon_attack)
+    #Battle happens
+    # We will turn this dialogue, along with cutscenes, into its own class
+    print("Two monsters approach you, ", end="")
+    time.sleep(1)
+    print("And the first one steps forward!")
+
     #Pseudo-code here: create Aero-Circuit
+    aero_low_attack, aero_high_attack, aero_weapon_attack = Attacks("enemy", "Fire", boss=True).names()
+    aero = Enemy("Aero-Circuit", "Fire", boss_life_points, aero_low_attack, aero_high_attack, weapon_attack=aero_weapon_attack)
+    #Battle happens
+
     #Pseudo-code here: create Super Circuit (fusion)
+    super = Enemy("Super-Circuit", "Lightning"...) #Finish this
 
     #Dont have the battle function in the if statement. Also change print statement
     if battle(hero, stage_boss, exp_damage) == "win":
