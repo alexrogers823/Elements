@@ -54,6 +54,13 @@ class Password:
 
         return
 
+class Cutscenes:
+    def __init__(self):
+        pass
+
+    def storyline(self, hero, level):
+        pass
+
 
 
 
