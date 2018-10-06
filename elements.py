@@ -67,6 +67,10 @@ def battle(hero, enemy, exp_damage):
         enemy.change_base_damage
         enemy_attack, enemy_damage = random.choice([(enemy.low_attack, enemy.base_low_damage), (enemy.high_attack, enemy.base_high_damage), (enemy.weapon_attack, enemy.base_weapon_damage)])
         enemy_damage = math.ceil(enemy_damage*exp_damage)
+
+        # if level == 4 or level == 9:
+        #     enemy_damage *= 1.5
+
         print("The {} attacks with {}, causing {} damage!".format(enemy.name, enemy_attack, enemy_damage))
         time.sleep(1)
         hero.attacked = enemy_damage
@@ -448,6 +452,9 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     boss_low_attack, boss_high_attack, boss_weapon_attack = Attacks("enemy", chosen_type, boss=True).names()
     boss_life_points = 50
     stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
+
+    # Cutscenes().storyline(hero, level)
+
     print("Welcome to the {}".format(stage))
     time.sleep(1)
     print("{0} Stage {1} Begin {0}".format("~", level))
@@ -567,7 +574,7 @@ def level_eight():
     #Battle happens
 
     #Pseudo-code here: create Super Circuit (fusion)
-    super = Enemy("Super-Circuit", "Lightning"...) #Finish this
+    # super = Enemy("Super-Circuit", "Lightning"...) #Finish this
 
     #Dont have the battle function in the if statement. Also change print statement
     if battle(hero, stage_boss, exp_damage) == "win":
