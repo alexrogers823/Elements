@@ -58,8 +58,42 @@ class Cutscenes:
     def __init__(self):
         pass
 
-    def storyline(self, hero, level):
-        pass
+    def storyline(self, hero, level, mid=""):
+        story = {
+            "1": [], # Move the 'long ago...' part here
+            "2": [],
+            "3": ['''"This seems odd", {} said. The approaching area felt so familiar...''',
+                '''The symbols on the walls were identical to their own''',
+                '''Suddenly {} realized. "Oh no!" the warrior said. "My own people have been corrupted!"'''],
+            "4": ['''{}'s heart became filled with sadness after fighting their own people''',
+                '''"I will end this evil presence!" the hero declared. "Then all will return to normal"''',
+                '''But as {} was pondering, a shadow appeared...''',
+                '''A force that had the exact opposite sign.''',
+                '''{} now knew that he would be going up against his weakness. And it wouldn't be easy...'''],
+            "5": ['''Now {} realized that they were getting closer to the great force that corrupted the world.''',
+                '''Having defeated each of the elements, their confidence seemed to get higher.''',
+                '''As {} kept walking, they noticed symbols that they had already came across.''',
+                '''"Is this a place I already visited?", they wondered. "Or...a stronger tribe of an element before?"''',
+                '''Ready for anything, {} carried on...'''],
+            "6": [],
+            "7": [],
+            "8": ['''"Man, this feels weird" {} stated. They were getting closer to a force they had never encounted.''',
+                '''It was clear that they were getting closer to the source of it all.''',
+                '''As the horizon became more clear, {} saw a large tower. It looked as if sparks randomly surrounded it.''',
+                '''"I don't know what element habits this place" the warrior said, "but it can't be good..."'''],
+            "9": ['''A voice called out to {}...''',
+                '''"MERE MORTAL" it said, "YOU WILL SUBMIT TO THE ULTIMATE POWER!"''',
+                '''{} was ready to fight back. "Who are you?" they replied. "And why are you here?"'''
+                '''"I AM ELEMATRIX" shouted the voice, "AND YOU WILL LEARN TO OBEY ME!"''',
+                '''"I will never let you rule!" {} shouted. "I will save my friends and restore humanity!"''',
+                '''"IF YOU WILL NOT COME WILLINGLY..."''',
+                '''"THEN I SHALL SEND AN ARMY OF YOUR WEAKNESS AT YOU. HAHAHA..."'''],
+            "10": [],
+        }
+
+        key = str(level) if mid == "" else str(level)+mid
+
+        return story[key]
 
 
 
