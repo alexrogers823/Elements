@@ -52,6 +52,8 @@ class Dialogue:
                 '''It was clear that they were getting closer to the source of it all.''',
                 '''As the horizon became more clear, {} saw a large tower. It looked as if sparks randomly surrounded it.''',
                 '''"I don't know what element habits this place" the warrior said, "but it can't be good..."'''],
+            "8A": ['''The two bosses began to merge into one!''',
+                '''With both elements changed, this new monster emitted jolts of lightning!'''],
             "9": ['''A voice called out to {}...''',
                 '''"MERE MORTAL" it said, "YOU WILL SUBMIT TO THE ULTIMATE POWER!"''',
                 '''{} was ready to fight back. "Who are you?" they replied. "And why are you here?"'''
@@ -60,6 +62,9 @@ class Dialogue:
                 '''"IF YOU WILL NOT COME WILLINGLY..."''',
                 '''"THEN I SHALL SEND AN ARMY OF YOUR WEAKNESS AT YOU. HAHAHA..."'''],
             "10": [],
+            "10A": ['''All of a sudden, the elements go wild...''',
+                '''A strange anomoly appears, and it looks...so...menicing!''',
+                ("It's time", "to fight", "ELEMATRIX!")]
         }
 
         key = str(level) if mid == "" else str(level)+mid
