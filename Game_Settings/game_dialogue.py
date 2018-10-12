@@ -19,7 +19,13 @@ class Dialogue:
 
     def cutscenes(self, hero, level, mid=""):
         story = {
-            "1": [], # Move the 'long ago...' part here
+            "1": ['''Long ago, the world was balanced by the elemental forces that were
+                bestowed, in equal strength and harmony.''',
+                '''But an evil entity took advantage of such strengths and created chaos,
+                unleashing havoc by corrupting the guardians of the elements and the ones
+                who serve them.''',
+                '''Now, it is up to {} to restore order, and bring an end to great evil once and
+                for all...'''], # Move the 'long ago...' part here
             "2": ['''"My friends have been corrupted" {} realized. There was something wrong witht them.''',
                 '''Never had other tribes been so hostile to each other. Not for centuries.''',
                 '''"There must be something in the air," the warrior thought, "or the way the stars have aligned"''',
@@ -61,7 +67,14 @@ class Dialogue:
                 '''"I will never let you rule!" {} shouted. "I will save my friends and restore humanity!"''',
                 '''"IF YOU WILL NOT COME WILLINGLY..."''',
                 '''"THEN I SHALL SEND AN ARMY OF YOUR WEAKNESS AT YOU. HAHAHA..."'''],
-            "10": [],
+            "10": ['''"Show yourself!" {} cried out to Elematrix. "I will defeat you and save the world!"''',
+                '''"IS THAT SO?" Elematrix replied. "YOU WISH TO BE DEFEATED SO SOON?"''',
+                '''The hero was not in the mood for games. "You will face me! Right here, right now!"''',
+                '''It was at that point that the world around {} began to change...''',
+                '''The sky darkened, the water disappeared, and the ground shifted to something unknown.''',
+                '''Alone and confused, {} yelled, "What is going on?!? Where am I? Answer me!"''',
+                '''"IF YOU WANT TO FACE ME, YOU WILL DO SO ON MY FIELD" Elematrix answered. "BUT FIRST..."''',
+                '''"I WILL THROW EVERY TYPE OF ELEMENT YOUR WAY. AND IF YOU SURVIVE, I'LL BE GLAD TO ANNIHILATE YOU MYSELF!""'''],
             "10A": ['''All of a sudden, the elements go wild...''',
                 '''A strange anomoly appears, and it looks...so...menicing!''',
                 ("It's time", "to fight", "ELEMATRIX!")]
