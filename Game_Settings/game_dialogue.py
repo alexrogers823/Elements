@@ -4,34 +4,36 @@ class Dialogue:
     def __init__(self):
         pass
 
-    def tutorial_text(self, hero, keyword):
-        help = {
+    def tutorial_text(self, keyword):
+        advice = {
             "main": ['''Welcome!
-            In ELEMENTS, heroes and enemies are based on one of four types: Water, Earth, Fire, and Air
-            Each type has a weakness (Water <--> Fire, Earth <--> Air) that can be used to your or your opponents advantage
-            {}''',
-            '''Your hero will start out with 100 life points and 50 magic points. Enemies will vary
-            Enemy damage will reduce your LP, and special/weapon attacks will reduce your MP
-            MP will increase by 5 after every turn, while LP will not increase until level ends
-            If your LP hits zero, it's game over
-            {}''',
-            '''Each time you beat an enemy, you gain XP and Coins
-            Higher XP leads to greater hero damage, and you can use coins in the shop (more on this later)
-            {}''',
-            '''Shop and fusions will be explained during the game
-            You're ready to pick your hero
-            {}'''],
+                    In ELEMENTS, heroes and enemies are based on one of four types: Water, Earth, Fire, and Air
+                    Each type has a weakness (Water <--> Fire, Earth <--> Air) that can be used to your or your opponents advantage
+                    {}''',
+                    '''Your hero will start out with 100 life points and 50 magic points. Enemies will vary
+                    Enemy damage will reduce your LP, and special/weapon attacks will reduce your MP
+                    MP will increase by 5 after every turn, while LP will not increase until level ends
+                    If your LP hits zero, it's game over
+                    {}''',
+                    '''Each time you beat an enemy, you gain XP and Coins
+                    Higher XP leads to greater hero damage, and you can use coins in the shop (more on this later)
+                    {}''',
+                    '''Shop and fusions will be explained during the game
+                    You're ready to pick your hero
+                    {}'''],
             "shop": '''Welcome to the shop!
-            This is where you can buy things for {} that will help in battles.
-            For example, {} has {} coins, and {} costs 100 coins. You can buy it now.
-            Also, you see {}'s XP. Higher XP leads to more impactful attacks.
-            I'll let you take a look around.
-            [ENTER to continue]''',
+                    This is where you can buy things for {0} that will help in battles.
+                    For example, {0} has {1} coins, and {2} costs 100 coins. You can buy it now.
+                    Also, you see {0}'s XP. Higher XP leads to more impactful attacks.
+                    I'll let you take a look around.
+                    [ENTER to continue]''',
             "fusion": [],
         }
 
+        return advice[keyword]
 
-    def battle_introductions(self, enemy):
+
+    def battle_introductions(self):
         introductions = [
             "A {} stands in your way! Prepare for battle!",
             "Your path is being blocked by a {}! Can you take him?",
@@ -41,9 +43,9 @@ class Dialogue:
             "You're face to face with a {}! And he's out for blood"
             ]
 
-        return choice(introductions).format(enemy.name)
+        return choice(introductions)
 
-    def cutscenes(self, hero, level, mid=""):
+    def cutscenes(self, level, mid=""):
         story = {
             "1": ['''Long ago, the world was balanced by the elemental forces that were
                 bestowed, in equal strength and harmony.''',
@@ -52,7 +54,7 @@ class Dialogue:
                 who serve them.''',
                 '''Now, it is up to {} to restore order, and bring an end to great evil once and
                 for all...'''], # Move the 'long ago...' part here
-            "2": ['''"My friends have been corrupted" {} realized. There was something wrong witht them.''',
+            "2": ['''"My friends have been corrupted" {} realized. There was something wrong with them.''',
                 '''Never had other tribes been so hostile to each other. Not for centuries.''',
                 '''"There must be something in the air," the warrior thought, "or the way the stars have aligned"''',
                 '''Confused, and determined to seek the issue, they carried on...'''],
@@ -63,7 +65,7 @@ class Dialogue:
                 '''"I will end this evil presence!" the hero declared. "Then all will return to normal"''',
                 '''But as {} was pondering, a shadow appeared...''',
                 '''A force that had the exact opposite sign.''',
-                '''{} now knew that he would be going up against his weakness. And it wouldn't be easy...'''],
+                '''{} now knew that they would be going up against their weakness. And it wouldn't be easy...'''],
             "5": ['''Now {} realized that they were getting closer to the great force that corrupted the world.''',
                 '''Having defeated each of the elements, their confidence seemed to get higher.''',
                 '''As {} kept walking, they noticed symbols that they had already came across.''',

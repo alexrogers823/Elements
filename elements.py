@@ -16,8 +16,8 @@ def set_gameplay():
 
 
 def main_play_order(play, hero):
-    if play.level == 0:
-        game_intro(hero)
+    # if play.level == 0:
+    #     game_intro(hero)
     while play.level < 10:
         order_of_levels(play, hero)
         shop(hero, play)
@@ -35,7 +35,7 @@ def game_intro(hero):
     input('\nPress ENTER to continue')
 
 
-def battle(hero, enemy, exp_damage):
+def battle(play, hero, enemy, exp_damage):
     # hero_battle = game_items.Battle(hero.life_points, hero.magic_points)
     # enemy_battle = game_items.Battle(enemy.life_points)
     hero_inventory = hero.display_inventory
@@ -50,7 +50,7 @@ def battle(hero, enemy, exp_damage):
         ]
 
     if not enemy.boss:
-        print(random.choice(introductions).format(enemy.name))
+        print(play.battle_intro().format(enemy.name))
     time.sleep(2)
     #Write a while loop that displays and executes attacks until there is a winner
     while hero.life_points > 0 and enemy.life_points > 0:
@@ -205,7 +205,7 @@ def tutorial(play):
     print('Is this your first time playing?')
     if input().lower().startswith('y'):
         play.show_tutorials
-        tutorial_explanations()
+        tutorial_explanations(play)
     # shop and fusion tutorial will happen during gameplay
     hero = create_hero()
     # game_intro(hero)
@@ -213,30 +213,15 @@ def tutorial(play):
     # generate_password(hero)
     return hero
 
-def tutorial_explanations():
+def tutorial_explanations(play):
     # talk about player types and weaknesses
     # give an example of battle gameplay
     # talk about XP and coin gains
     next = '[Press ENTER]'
-    print('''Welcome!
-    In ELEMENTS, heroes and enemies are based on one of four types: Water, Earth, Fire, and Air
-    Each type has a weakness (Water <--> Fire, Earth <--> Air) that can be used to your or your opponents advantage
-    {}'''.format(next))
-    input()
-    print('''Your hero will start out with 100 life points and 50 magic points. Enemies will vary
-    Enemy damage will reduce your LP, and special/weapon attacks will reduce your MP
-    MP will increase by 5 after every turn, while LP will not increase until level ends
-    If your LP hits zero, it's game over
-    {}'''.format(next))
-    input()
-    print('''Each time you beat an enemy, you gain XP and Coins
-    Higher XP leads to greater hero damage, and you can use coins in the shop (more on this later)
-    {}'''.format(next))
-    input()
-    print('''Shop and fusions will be explained during the game
-    You're ready to pick your hero
-    {}'''.format(next))
-    input()
+
+    for line in play.tutorial_guide("main"):
+        print(line.format(next))
+        input()
 
 def tutorial_shop(hero):
     print('''Welcome to the shop!
@@ -325,7 +310,7 @@ def order_of_levels(play, hero):
     if play.level == 8:
         level_eight()
     elif play.level <= 9:
-        set_level(play, level_select, stage_select, hero, minion_name, boss_name, play.level, exp_increase, number_of_enemies)
+        set_level(play, level_select, stage_select, hero, minion_name, boss_name, exp_increase, number_of_enemies)
     else:
         level_ten()
 
@@ -346,8 +331,7 @@ def shop(hero, play):
     '''Where user can purchase upgrades for their hero'''
     # show weapons and stones, and how much each cost
     # make sure hero can only equip one elemental stone
-    if play.tutorial == True:
-        tutorial_shop(hero)
+    print(play.tutorial_guide("shop").format(hero.name, hero.coins, hero.weapon_attack))
     while True:
         print("{0} SHOP {0}".format("-"*5))
         print("Type in the first three letters of item to purchase.")
@@ -438,7 +422,8 @@ def user_options(hero, enemy, hero_inventory):
 
     return choice, attack_points, magic_points
 
-def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp_damage, number_of_enemies):
+def set_level(play, chosen_type, stage, hero, minion_name, boss_name, exp_damage, number_of_enemies):
+    level = play.level
     level_coins = 0
     level_xp = 0
     '''Creates level based on various factors'''
@@ -454,6 +439,11 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
 
     # Cutscenes().storyline(hero, level)
+    clear_screen()
+    for line in play.start_cutscene(level):
+        print(line.format(hero))
+        time.sleep(4)
+    input('PRESS ENTER\n')
 
     print("Welcome to the {}".format(stage))
     time.sleep(1)
@@ -467,8 +457,8 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
     while kills < number_of_enemies:
 
         minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
-        # outcome = battle(hero, minion)
-        if battle(hero, minion, exp_damage) == "win":
+        # outcome = battle(play, hero, minion)
+        if battle(play, hero, minion, exp_damage) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
             print()
             hero.gain_coins_and_xp = 'minion'
@@ -481,8 +471,8 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
             game_over(hero, "bad", play)
 
     print("You did good, but now...here comes the boss, {}!".format(stage_boss.name))
-    # outcome = battle(hero, boss)
-    if battle(hero, stage_boss, exp_damage) == "win":
+    # outcome = battle(play, hero, boss)
+    if battle(play, hero, stage_boss, exp_damage) == "win":
         print("{} is defeated! You beat the level!".format(stage_boss.name))
         hero.gain_coins_and_xp = 'boss'
         level_coins += 75
@@ -494,11 +484,6 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, level, exp
         # shop(hero)
     else:
         game_over(hero, "bad", play)
-
-def cutscene():
-    # Actual text will be from a class, and be re-routed here
-    pass
-
 
 
 def level_three():
@@ -545,8 +530,8 @@ def level_eight():
     while kills < number_of_enemies:
         #refactor minion variable
         minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
-        # outcome = battle(hero, minion)
-        if battle(hero, minion) == "win":
+        # outcome = battle(play, hero, minion)
+        if battle(play, hero, minion) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
             hero.gain_coins_and_xp = 'minion'
             # hero.gain_xp = 'minion'
@@ -577,7 +562,7 @@ def level_eight():
     # super = Enemy("Super-Circuit", "Lightning"...) #Finish this
 
     #Dont have the battle function in the if statement. Also change print statement
-    if battle(hero, stage_boss, exp_damage) == "win":
+    if battle(play, hero, stage_boss, exp_damage) == "win":
         print("The fusion boss is defeated! You beat the level!")
         time.sleep(2)
         print("Very impressive!")
@@ -615,8 +600,8 @@ def level_ten():
     while kills < number_of_enemies:
         #refactor minion variable
         minion = Enemy(minion_name, chosen_type, minion_life_points, minion_low_attack, minion_high_attack, weapon_attack=minion_weapon_attack)
-        # outcome = battle(hero, minion)
-        if battle(hero, minion) == "win":
+        # outcome = battle(play, hero, minion)
+        if battle(play, hero, minion) == "win":
             print("{} is defeated! You gain 5 coins".format(minion.name))
             hero.gain_coins_and_xp = 'minion'
             # hero.gain_xp = 'minion'
@@ -725,5 +710,5 @@ print()
 # private variables. move these later
 # game_difficulty = 'normal'
 # game_mode = 'scarce'
-game_multiplier = 1.3
+# game_multiplier = 1.3
 set_gameplay()

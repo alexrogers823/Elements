@@ -15,18 +15,18 @@ class Gameplay:
         self.level = num
 
 
-    def start_cutscene(self, hero, level, **kwargs):
-        return self.dialogue().cutscenes(hero, level, **kwargs)
+    def start_cutscene(self, level, **kwargs):
+        return self.dialogue().cutscenes(level, **kwargs)
 
 
-    def tutorial_guide(self, hero, keyword):
+    def tutorial_guide(self, keyword):
         if self.tutorial:
-            return self.dialogue().tutorial_text(hero, keyword)
+            return self.dialogue().tutorial_text(keyword)
 
 
-    def battle_intro(self, enemy):
-        return self.dialogue().battle_introductions(enemy)
-        
+    def battle_intro(self):
+        return self.dialogue().battle_introductions()
+
 
     @property
     def set_difficulty(self):
