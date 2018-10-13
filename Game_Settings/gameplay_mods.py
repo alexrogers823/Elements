@@ -1,5 +1,8 @@
+from .game_dialogue import Dialogue
+
 class Gameplay:
-    def __init__(self):
+    def __init__(self, dialogue=Dialogue):
+        self.dialogue = dialogue
         self.difficulty = "normal"
         self.mode = "scarce"
         self.lp_replenish = 20
@@ -10,6 +13,20 @@ class Gameplay:
 
     def set_level(self, num):
         self.level = num
+
+
+    def start_cutscene(self, hero, level, **kwargs):
+        return self.dialogue().cutscenes(hero, level, **kwargs)
+
+
+    def tutorial_guide(self, hero, keyword):
+        if self.tutorial:
+            return self.dialogue().tutorial_text(hero, keyword)
+
+
+    def battle_intro(self, enemy):
+        return self.dialogue().battle_introductions(enemy)
+        
 
     @property
     def set_difficulty(self):

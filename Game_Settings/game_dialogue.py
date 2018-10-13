@@ -4,6 +4,32 @@ class Dialogue:
     def __init__(self):
         pass
 
+    def tutorial_text(self, hero, keyword):
+        help = {
+            "main": ['''Welcome!
+            In ELEMENTS, heroes and enemies are based on one of four types: Water, Earth, Fire, and Air
+            Each type has a weakness (Water <--> Fire, Earth <--> Air) that can be used to your or your opponents advantage
+            {}''',
+            '''Your hero will start out with 100 life points and 50 magic points. Enemies will vary
+            Enemy damage will reduce your LP, and special/weapon attacks will reduce your MP
+            MP will increase by 5 after every turn, while LP will not increase until level ends
+            If your LP hits zero, it's game over
+            {}''',
+            '''Each time you beat an enemy, you gain XP and Coins
+            Higher XP leads to greater hero damage, and you can use coins in the shop (more on this later)
+            {}''',
+            '''Shop and fusions will be explained during the game
+            You're ready to pick your hero
+            {}'''],
+            "shop": '''Welcome to the shop!
+            This is where you can buy things for {} that will help in battles.
+            For example, {} has {} coins, and {} costs 100 coins. You can buy it now.
+            Also, you see {}'s XP. Higher XP leads to more impactful attacks.
+            I'll let you take a look around.
+            [ENTER to continue]''',
+            "fusion": [],
+        }
+
 
     def battle_introductions(self, enemy):
         introductions = [
