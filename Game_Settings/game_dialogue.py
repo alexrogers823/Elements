@@ -25,8 +25,7 @@ class Dialogue:
                     This is where you can buy things for {0} that will help in battles.
                     For example, {0} has {1} coins, and {2} costs 100 coins. You can buy it now.
                     Also, you see {0}'s XP. Higher XP leads to more impactful attacks.
-                    I'll let you take a look around.
-                    [ENTER to continue]''',
+                    I'll let you take a look around.''',
             "fusion": [],
         }
 

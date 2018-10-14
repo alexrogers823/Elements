@@ -22,32 +22,11 @@ def main_play_order(play, hero):
         order_of_levels(play, hero)
         shop(hero, play)
 
-# playing with this idea. May or may not have it
-def game_intro(hero):
-    print()
-    print('''\tLong ago, the world was balanced by the elemental forces
-    that were bestowed, in equal strength and harmony.
-    \tBut an evil entity took advantage of such strengths and created chaos,
-    unleashing havoc by corrupting the guardians of the elements and the ones
-    who serve them.
-    Now, it is up to {} to restore order, and bring an end to great evil once and
-    for all...'''.format(hero.name))
-    input('\nPress ENTER to continue')
-
 
 def battle(play, hero, enemy, exp_damage):
     # hero_battle = game_items.Battle(hero.life_points, hero.magic_points)
     # enemy_battle = game_items.Battle(enemy.life_points)
     hero_inventory = hero.display_inventory
-
-    introductions = [
-        "A {} stands in your way! Prepare for battle!",
-        "Your path is being blocked by a {}! Can you take him?",
-        "Look here, a {} is sizing you up! Kill them",
-        "You've stumbled across a {}, and he looks dangerous!",
-        "All of a sudden a {} approaches! Stand your ground!",
-        "You're face to face with a {}! And he's out for blood"
-        ]
 
     if not enemy.boss:
         print(play.battle_intro().format(enemy.name))
@@ -142,11 +121,6 @@ def main_menu(play):
         main_play_order(play, hero)
 
 
-    #if password isn't blank, unpack it as a tuple. if blank, ask for tutorial
-    # and/or go to create_hero
-    # also provide try/except if user enters an invalid password
-
-
 def change_modes(play):
     '''function that allows user to set difficulty and mode for game'''
     # have information dict/list to show different modes
@@ -223,15 +197,6 @@ def tutorial_explanations(play):
         print(line.format(next))
         input()
 
-def tutorial_shop(hero):
-    print('''Welcome to the shop!
-    This is where you can buy things for {} that will help in battles.
-    For example, {} has {} coins, and {} costs 100 coins. You can buy it now.
-    Also, you see {}'s XP. Higher XP leads to more impactful attacks.
-    I'll let you take a look around.
-    [ENTER to continue]''')
-
-
 
 def create_hero():
     '''Sets hero name and type to use throughout gameplay'''
@@ -302,7 +267,7 @@ def order_of_levels(play, hero):
     minion_name = enemy_names[level_select][0]
     boss_name = enemy_names[level_select][2]
 
-    number_of_enemies = play.call_enemies
+    number_of_enemies = play.call_enemies*play.enemy_multiplier
     exp_increase = play.multiplier**(play.level-1)
     # print(play.level)
 
@@ -313,18 +278,6 @@ def order_of_levels(play, hero):
         set_level(play, level_select, stage_select, hero, minion_name, boss_name, exp_increase, number_of_enemies)
     else:
         level_ten()
-
-    # level_one(level_select[0], stages[level_select[0]][0], hero, enemy_names[level_select[0]][0], enemy_names[level_select[0]][2])
-    # level_two(level_select[1], stages[level_select[1]][0], hero, enemy_names[level_select[1]][0], enemy_names[level_select[1]][2])
-    # level_three(level_select[2], stages[level_select[2]][0])
-    # level_four(level_select[3], stages[level_select[3]][0])
-    # level_five(level_select[0], stages[level_select[0]][1])
-    # level_six(level_select[1], stages[level_select[1]][1])
-    # level_seven(level_select[2], stages[level_select[2]][1])
-    # level_eight("Fusion", "Lightning Tower")
-    # level_nine(level_select[3], stages[level_select[3]][1])
-    # level_ten("Fusion", "Element Vortex")
-
 
 
 def shop(hero, play):
@@ -419,18 +372,12 @@ def user_options(hero, enemy, hero_inventory):
     # hero.choose_attack_damage = letter
     attack_points, magic_points = choice_attack[chr(letter+65)]
 
-
     return choice, attack_points, magic_points
 
 def set_level(play, chosen_type, stage, hero, minion_name, boss_name, exp_damage, number_of_enemies):
-    level = play.level
+    '''Creates level based on various factors'''
     level_coins = 0
     level_xp = 0
-    '''Creates level based on various factors'''
-    # unused function. Meant to create all levels using several arguments instead
-    # will come back to this. Could be useful for refactoring into cleaner code
-    # if level == 1:
-    #     number_of_enemies = 5
 
     minion_low_attack, minion_high_attack, minion_weapon_attack = Attacks("enemy", chosen_type).names()
     minion_life_points = math.floor(20*exp_damage)
@@ -438,16 +385,15 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, exp_damage
     boss_life_points = 50
     stage_boss = Enemy(boss_name, chosen_type, boss_life_points, boss_low_attack, boss_high_attack, weapon_attack=boss_weapon_attack, boss=True)
 
-    # Cutscenes().storyline(hero, level)
     clear_screen()
-    for line in play.start_cutscene(level):
+    for line in play.start_cutscene(play.level):
         print(line.format(hero))
         time.sleep(4)
     input('PRESS ENTER\n')
 
     print("Welcome to the {}".format(stage))
     time.sleep(1)
-    print("{0} Stage {1} Begin {0}".format("~", level))
+    print("{0} Stage {1} Begin {0}".format("~", play.level))
     time.sleep(1)
     print("Enemies: {}".format(number_of_enemies))
     time.sleep(1)
@@ -479,32 +425,11 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, exp_damage
         level_xp += 50
         # hero.gain_xp = 'boss'
         time.sleep(3)
-        display_stats(hero, level, level_coins, level_xp)
+        display_stats(hero, play.level, level_coins, level_xp)
         clear_screen()
         # shop(hero)
     else:
         game_over(hero, "bad", play)
-
-
-def level_three():
-    '''Sets level'''
-
-
-
-def level_four():
-    '''Sets level'''
-
-
-def level_five():
-    '''Sets level'''
-
-
-def level_six():
-    '''Sets level'''
-
-
-def level_seven():
-    '''Sets level'''
 
 
 def level_eight():
@@ -571,15 +496,11 @@ def level_eight():
         level_xp += 50
         # hero.gain_xp = 'boss'
         time.sleep(3)
-        display_stats(hero, level, level_coins, level_xp)
+        display_stats(hero, play.level, level_coins, level_xp)
         clear_screen()
         # shop(hero)
     else:
         game_over(hero, "bad", play)
-
-
-def level_nine():
-    '''Sets level'''
 
 
 def level_ten():
@@ -707,8 +628,4 @@ print()
 # if play_again.lower().startswith('y'):
 #     main_menu()
 
-# private variables. move these later
-# game_difficulty = 'normal'
-# game_mode = 'scarce'
-# game_multiplier = 1.3
 set_gameplay()
