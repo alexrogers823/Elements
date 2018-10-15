@@ -284,7 +284,8 @@ def shop(hero, play):
     '''Where user can purchase upgrades for their hero'''
     # show weapons and stones, and how much each cost
     # make sure hero can only equip one elemental stone
-    print(play.tutorial_guide("shop").format(hero.name, hero.coins, hero.weapon_attack))
+    shop_tutorial = play.tutorial_guide("shop").format(hero.name, hero.coins, hero.weapon_attack) if play.tutorial else ""
+    print(shop_tutorial)
     while True:
         print("{0} SHOP {0}".format("-"*5))
         print("Type in the first three letters of item to purchase.")
@@ -298,6 +299,8 @@ def shop(hero, play):
         if buy.upper() != 'EXIT':
             if buy.lower().startswith('wea'):
                 hero.acquire_items = 'weapon'
+            elif buy.lower().startswith('tem'):
+                hero.acquire_items = 'temp stone'
             print('Item bought!')
             time.sleep(2)
             clear_screen()
@@ -388,8 +391,10 @@ def set_level(play, chosen_type, stage, hero, minion_name, boss_name, exp_damage
     clear_screen()
     for line in play.start_cutscene(play.level):
         print(line.format(hero))
-        time.sleep(4)
-    input('PRESS ENTER\n')
+        # time.sleep(4)
+        if input('PRESS ENTER (type \'skip\' to skip cutscene)\n') == 'skip':
+            break
+    # input('PRESS ENTER\n')
 
     print("Welcome to the {}".format(stage))
     time.sleep(1)
