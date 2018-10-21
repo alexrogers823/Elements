@@ -93,7 +93,7 @@ class Hero(Player):
         if self.has_weapon == False:
             shop_list.add([weapon.name.title(), 100, weapon.description])
         else:
-            shop_list.add(['Lvl {} {}'.format(2, weapon.name.title()), 250, weapon.description])
+            shop_list.add(['Lvl {} {}'.format(self.weapon_level+1, weapon.name.title()), 250, weapon.description])
         if self.temp_stone == False:
             shop_list.add(['Temperature Stone', 500, 'This stone lets you do temp-altered attacks for greater damage'])
         try:
@@ -126,7 +126,7 @@ class Hero(Player):
         return self.coins, self.xp
 
 
-    @property
+    # Pass in arguments to change variables
     def acquire_items(self):
         self.has_weapon = has_weapon
         self.temp_stone = temp_stone
@@ -170,16 +170,16 @@ class Hero(Player):
             return self.coins, self.xp
 
 
-    @acquire_items.setter
-    def acquire_items(self, bought):
-        if bought == "weapon":
-            self.has_weapon = True
-            self.weapon_level += 1
-            self.coins -= 100
-        if bought == "temp stone":
-            self.temp_stone = True
-        if bought.startswith("element"):
-            self.elemental_stone = bought.split()[1]
+    # @acquire_items.setter
+    # def acquire_items(self, bought):
+    #     if bought == "weapon":
+    #         self.has_weapon = True
+    #         self.weapon_level += 1
+    #         self.coins -= 100
+    #     if bought == "temp stone":
+    #         self.temp_stone = True
+    #     if bought.startswith("element"):
+    #         self.elemental_stone = bought.split()[1]
 
 
 # enemy class inherits from player class, but we will call directly with specific enemies using MRO
